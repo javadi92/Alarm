@@ -6,11 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
 import java.util.Calendar;
-
-import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class ResetAlarm extends BroadcastReceiver {
     @Override

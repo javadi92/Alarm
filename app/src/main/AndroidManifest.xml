@@ -3,8 +3,9 @@
     package="com.javadi.alarm">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".App"
@@ -29,7 +30,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:showOnLockScreen="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
