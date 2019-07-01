@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".App"
+        android:name=".util.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".MyReceiver"
+            android:name=".receiver.MyReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -24,19 +24,25 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".ResetAlarm">
+        <receiver android:name=".util.ResetAlarm">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <activity android:name=".MainActivity"
-            android:showOnLockScreen="true">
+        <activity android:name=".activity.AddAlarmsActivity">
+
+        </activity>
+        <activity android:name=".activity.StopActivity"
+            android:showOnLockScreen="true"/>
+        <activity android:name=".activity.MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
