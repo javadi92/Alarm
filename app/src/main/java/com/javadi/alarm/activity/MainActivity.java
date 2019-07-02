@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.javadi.alarm.adapter.AlarmAdapter;
 import com.javadi.alarm.R;
 import com.javadi.alarm.database.DBC;
@@ -21,10 +23,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fabAddAlarm;
-    RecyclerView recyclerView;
+    static RecyclerView recyclerView;
     TextView tv;
-    AlarmAdapter alarmAdapter;
-    static List<Alarm> alarms;
+    public static AlarmAdapter alarmAdapter;
+    public static List<Alarm> alarms;
+    static int pending;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +52,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
                 intent.putExtra("add_button",1);
-                intent.putExtra("pending_id",alarmAdapter.getItemCount());
+                Cursor cursor=App.dbHelper.getAlarms();
+                if(cursor.moveToLast()){
+                    pending=cursor.getInt(0)+1;
+                }
+                else {
+                    pending=1;
+                }
+                Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_LONG).show();
+                intent.putExtra("pending_id",pending);
                 startActivity(intent);
             }
         });
@@ -59,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getAlarms(){
+    public static void getAlarms(){
         Cursor cursor= App.dbHelper.getAlarms();
         if(cursor.moveToFirst()){
             do{
@@ -67,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
                 alarm.setHour(cursor.getInt(cursor.getColumnIndex(DBC.hour)));
                 alarm.setMinute(cursor.getInt(cursor.getColumnIndex(DBC.minute)));
                 alarm.setAvailable(cursor.getInt(cursor.getColumnIndex(DBC.available)));
-                alarms.add(alarm);
+                if(!alarms.contains(alarm)){
+                    alarms.add(alarm);
+                }
             }while (cursor.moveToNext());
         }
     }
@@ -75,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getAlarms();
-        alarmAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(alarmAdapter);
+        if(alarms.size()>0){
+            tv.setVisibility(View.GONE);
+        }
     }
 }

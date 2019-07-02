@@ -43,7 +43,7 @@ import java.util.Calendar;
             pendingId=getIntent().getIntExtra("p_id",0);
         }
 
-        sharedPreferences= getApplicationContext().getSharedPreferences("save_time",MODE_PRIVATE);
+        //sharedPreferences= getApplicationContext().getSharedPreferences("save_time",MODE_PRIVATE);
 
         timePicker=(TimePicker)findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
@@ -62,6 +62,9 @@ import java.util.Calendar;
                     setTime(getHour,getMinute);
                     try{
                         App.dbHelper.insertAlarm(getHour,getMinute);
+                        MainActivity.alarms.clear();
+                        MainActivity.getAlarms();
+                        MainActivity.alarmAdapter.notifyDataSetChanged();
                     }catch (SQLException e){
                         e.printStackTrace();
                     }
@@ -71,6 +74,9 @@ import java.util.Calendar;
                     setTime(getHour,getMinute);
                     try{
                         App.dbHelper.insertAlarm(getHour,getMinute);
+                        MainActivity.alarms.clear();
+                        MainActivity.getAlarms();
+                        MainActivity.alarmAdapter.notifyDataSetChanged();
                     }catch (SQLException e){
                         e.printStackTrace();
                     }
