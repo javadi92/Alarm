@@ -11,7 +11,6 @@ import com.javadi.alarm.R;
 import com.javadi.alarm.activity.AddAlarmsActivity;
 import com.javadi.alarm.model.Alarm;
 import com.suke.widget.SwitchButton;
-
 import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder> {
@@ -50,6 +49,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 myViewHolder.itemView.getContext().startActivity(intent2);
             }
         });
+
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.R;
 import com.javadi.alarm.util.App;
 import java.util.Calendar;
+import java.util.Date;
 
  public class AddAlarmsActivity extends AppCompatActivity {
 
@@ -103,6 +105,9 @@ import java.util.Calendar;
         calendar.set(Calendar.HOUR_OF_DAY,Hour);
         calendar.set(Calendar.MINUTE,Minute);
         calendar.set(Calendar.SECOND,0);
+        if(calendar.getTimeInMillis()< System.currentTimeMillis()){
+            calendar.add(Calendar.DATE,1);
+        }
         Intent intent=new Intent(AddAlarmsActivity.this,MyReceiver.class);
         intent.setAction("com.javadi.alarm");
         AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
