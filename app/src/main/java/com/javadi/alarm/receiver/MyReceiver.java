@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
-
 import com.javadi.alarm.activity.StopActivity;
 import com.javadi.alarm.util.App;
 

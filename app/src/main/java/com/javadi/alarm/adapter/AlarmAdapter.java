@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.javadi.alarm.R;
 import com.javadi.alarm.activity.AddAlarmsActivity;
 import com.javadi.alarm.database.DBC;
@@ -20,7 +19,6 @@ import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.util.App;
 import com.suke.widget.SwitchButton;
-
 import java.util.Calendar;
 import java.util.List;
 
