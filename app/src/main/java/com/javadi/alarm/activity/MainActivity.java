@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager llm=new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
-        alarmAdapter=new AlarmAdapter(alarms);
+        alarmAdapter=new AlarmAdapter(getApplicationContext(),alarms);
         recyclerView.setAdapter(alarmAdapter);
 
         fabAddAlarm=(FloatingActionButton)findViewById(R.id.fab_add_alarm);
