@@ -70,7 +70,7 @@ public class StopActivity extends AppCompatActivity {
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
 
                 //Toast.makeText(getApplicationContext(),"آلارم متوقف شد",Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(),pendingId+"",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),pendingId+"",Toast.LENGTH_LONG).show();
                 Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
                 intent.setAction("com.javadi.alarm");
                 AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);

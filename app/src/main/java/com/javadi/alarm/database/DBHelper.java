@@ -65,6 +65,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.update(DBC.TABLE_NAME,contentValues,DBC.ID+"=?",new String[]{String.valueOf(id)});
     }
 
+    public int deleteAlarm(int id){
+        SQLiteDatabase db=this.getWritableDatabase();
+        return db.delete(DBC.TABLE_NAME,DBC.ID+"=?",new String[]{String.valueOf(id)});
+    }
+
     public Cursor getAlarms(){
         Cursor cursor=null;
         SQLiteDatabase db= this.getReadableDatabase();

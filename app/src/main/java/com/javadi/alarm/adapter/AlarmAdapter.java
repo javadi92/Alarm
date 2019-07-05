@@ -5,9 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +57,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         myViewHolder.tvMinute.setText(minute);
         if(alarms.get(i).getAvailable()==1){
             myViewHolder.aSwitch.setChecked(true);
+            myViewHolder.tvHour.setTextColor(Color.GREEN);
+            myViewHolder.textView.setTextColor(Color.GREEN);
+            myViewHolder.tvMinute.setTextColor(Color.GREEN);
         }
 
         final int h=Integer.parseInt(hour);
@@ -75,7 +81,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     }while (cursor.moveToNext());
                 }
                 if(!isChecked){
-                    Toast.makeText(mContext,"غیر فعال شد",Toast.LENGTH_LONG).show();
+                    myViewHolder.tvHour.setTextColor(Color.WHITE);
+                    myViewHolder.textView.setTextColor(Color.WHITE);
+                    myViewHolder.tvMinute.setTextColor(Color.WHITE);
+                    Toast.makeText(mContext,"آلارم غیر فعال شد",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(mContext, MyReceiver.class);
                     intent.setAction("com.javadi.alarm");
                     AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
@@ -86,7 +95,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     App.dbHelper.updateAlarm(id,h,m,0);
                 }
                 else {
-                    Toast.makeText(mContext,"فعال شد",Toast.LENGTH_LONG).show();
+                    myViewHolder.tvHour.setTextColor(Color.GREEN);
+                    myViewHolder.textView.setTextColor(Color.GREEN);
+                    myViewHolder.tvMinute.setTextColor(Color.GREEN);
+                    Toast.makeText(mContext,"آلارم فعال شد",Toast.LENGTH_SHORT).show();
                     Calendar calendar=Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY,h);
                     calendar.set(Calendar.MINUTE,m);
@@ -123,11 +135,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
     class myViewHolder extends RecyclerView.ViewHolder{
 
         TextView tvHour;
+        TextView textView;
         TextView tvMinute;
         SwitchButton aSwitch;
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
             tvHour=(TextView)itemView.findViewById(R.id.tv_hour);
+            textView=(TextView)itemView.findViewById(R.id.textView);
             tvMinute=(TextView)itemView.findViewById(R.id.tv_minute);
             aSwitch=(SwitchButton)itemView.findViewById(R.id.switch_button);
         }
@@ -144,4 +158,5 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,pending_id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
         alarmManager.cancel(pendingIntent);
     }
+
 }

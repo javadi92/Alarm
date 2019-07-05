@@ -24,7 +24,7 @@ import java.util.Date;
 
  public class AddAlarmsActivity extends AppCompatActivity {
 
-     Button btnSet,btnStop;
+     Button btnSet;
      TextView tvTimeSeted;
      TimePicker timePicker;
      static SharedPreferences sharedPreferences;
@@ -52,7 +52,6 @@ import java.util.Date;
 
         tvTimeSeted=(TextView)findViewById(R.id.tv_time_seted);
         btnSet=(Button)findViewById(R.id.btn_set);
-        btnStop=(Button)findViewById(R.id.btn_stop);
 
         btnSet.setOnClickListener(new View.OnClickListener() {
 
@@ -83,10 +82,10 @@ import java.util.Date;
                         e.printStackTrace();
                     }
                 }
-                Toast.makeText(AddAlarmsActivity.this,"آلارم با موفقیت تنظیم شد",Toast.LENGTH_LONG).show();
+                //Toast.makeText(AddAlarmsActivity.this,"آلارم با موفقیت تنظیم شد",Toast.LENGTH_LONG).show();
             }
         });
-        btnStop.setOnClickListener(new View.OnClickListener() {
+        /*btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
@@ -97,7 +96,7 @@ import java.util.Date;
                 App.mediaPlayer.stop();
                 App.mediaPlayer=MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
             }
-        });
+        });*/
     }
 
     private void setTime(int Hour,int Minute){
