@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,11 +52,54 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         }
         myViewHolder.tvHour.setText(hour);
         myViewHolder.tvMinute.setText(minute);
+        if(alarms.get(i).getAvailable()==1){
+            myViewHolder.aSwitch.setChecked(true);
+        }
+
+        final int h=Integer.parseInt(hour);
+        final int m=Integer.parseInt(minute);
+
+
         myViewHolder.aSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if(isChecked){
-
+                int id=1;
+                Cursor cursor=App.dbHelper.getAlarms();
+                if(cursor.moveToFirst()){
+                    do{
+                        if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==h){
+                            if(cursor.getInt(cursor.getColumnIndex(DBC.minute))==m){
+                                id=cursor.getInt(0);
+                            }
+                        }
+                    }while (cursor.moveToNext());
+                }
+                if(!isChecked){
+                    Toast.makeText(mContext,"غیر فعال شد",Toast.LENGTH_LONG).show();
+                    Intent intent=new Intent(mContext, MyReceiver.class);
+                    intent.setAction("com.javadi.alarm");
+                    AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
+                    PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
+                    alarmManager.cancel(pendingIntent);
+                    App.mediaPlayer.stop();
+                    App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
+                    App.dbHelper.updateAlarm(id,h,m,0);
+                }
+                else {
+                    Toast.makeText(mContext,"فعال شد",Toast.LENGTH_LONG).show();
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY,h);
+                    calendar.set(Calendar.MINUTE,m);
+                    calendar.set(Calendar.SECOND,0);
+                    if(calendar.getTimeInMillis()< System.currentTimeMillis()){
+                        calendar.add(Calendar.DATE,1);
+                    }
+                    Intent intent=new Intent(mContext,MyReceiver.class);
+                    intent.setAction("com.javadi.alarm");
+                    AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
+                    PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+                    App.dbHelper.updateAlarm(id,h,m,1);
                 }
             }
         });

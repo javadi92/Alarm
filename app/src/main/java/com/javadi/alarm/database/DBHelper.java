@@ -50,9 +50,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public long insertAlarm(int hour,int minute){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues contentValues=new ContentValues();
-        contentValues.put("hour",hour);
-        contentValues.put("minute",minute);
+        contentValues.put(DBC.hour,hour);
+        contentValues.put(DBC.minute,minute);
+        contentValues.put(DBC.available,1);
         return db.insert(DBC.TABLE_NAME,null,contentValues);
+    }
+
+    public int updateAlarm(int id,int hour,int minute,int available){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put(DBC.hour,hour);
+        contentValues.put(DBC.minute,minute);
+        contentValues.put(DBC.available,available);
+        return db.update(DBC.TABLE_NAME,contentValues,DBC.ID+"=?",new String[]{String.valueOf(id)});
     }
 
     public Cursor getAlarms(){

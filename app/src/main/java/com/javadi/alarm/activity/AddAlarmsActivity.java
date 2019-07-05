@@ -95,7 +95,7 @@ import java.util.Date;
                 PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),pendingId,intent,PendingIntent.FLAG_UPDATE_CURRENT );
                 alarmManager.cancel(pendingIntent);
                 App.mediaPlayer.stop();
-                App.mediaPlayer=MediaPlayer.create(getApplicationContext(),R.raw.alarm);
+                App.mediaPlayer=MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
             }
         });
     }

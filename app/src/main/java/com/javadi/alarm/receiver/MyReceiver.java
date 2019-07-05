@@ -18,9 +18,8 @@ public class MyReceiver extends BroadcastReceiver {
         if(intent.getAction().equalsIgnoreCase("com.javadi.alarm")){
             App.mediaPlayer.start();
 
-            Vibrator vibrate;
-            vibrate=(Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrate.vibrate(3000);
+            long[] pattern = {0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
+            App.vibrate.vibrate(pattern,-1);
 
             Intent lockIntent = new Intent(context, StopActivity.class);
             lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

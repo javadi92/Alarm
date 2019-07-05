@@ -77,6 +77,7 @@ public class StopActivity extends AppCompatActivity {
                 PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),pendingId,intent,PendingIntent.FLAG_UPDATE_CURRENT );
                 alarmManager.cancel(pendingIntent);
                 App.mediaPlayer.stop();
+                App.vibrate.cancel();
                 App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
                 App.sharedPreferences.edit().putInt("is_run",0).commit();
                 App.sharedPreferences.edit().putInt("pending_id",0).commit();
