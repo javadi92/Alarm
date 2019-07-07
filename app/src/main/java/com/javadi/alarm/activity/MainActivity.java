@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
-                intent.putExtra("add_button",1);
+                //intent.putExtra("add_button",1);
                 Cursor cursor=App.dbHelper.getAlarms();
                 if(cursor.moveToLast()){
                     pending=cursor.getInt(0);

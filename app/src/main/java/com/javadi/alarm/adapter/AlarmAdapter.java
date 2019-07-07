@@ -116,14 +116,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             }
         });
 
-        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        /*myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent2=new Intent(myViewHolder.itemView.getContext(), AddAlarmsActivity.class);
                 intent2.putExtra("p_id",i);
                 myViewHolder.itemView.getContext().startActivity(intent2);
             }
-        });
+        });*/
 
     }
 

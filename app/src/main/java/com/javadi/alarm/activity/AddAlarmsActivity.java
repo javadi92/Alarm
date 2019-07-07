@@ -37,13 +37,7 @@ import java.util.Date;
         setContentView(R.layout.activity_add);
 
 
-        int check_add_button=getIntent().getIntExtra("add_button",0);
-        if(check_add_button==1){
-            pendingId=getIntent().getIntExtra("pending_id",0);
-        }
-        else{
-            pendingId=getIntent().getIntExtra("p_id",0);
-        }
+        pendingId=getIntent().getIntExtra("pending_id",0);
 
         //sharedPreferences= getApplicationContext().getSharedPreferences("save_time",MODE_PRIVATE);
 
