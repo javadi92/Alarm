@@ -66,20 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this,alarms.get(position).getMinute()+"",Toast.LENGTH_LONG).show();
                     Cursor cursor=App.dbHelper.getAlarms();
                     if(cursor.moveToFirst()){
-                        do{
-                            if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==alarms.get(position).getHour()){
-                                if(cursor.getInt(cursor.getColumnIndex(DBC.minute))==alarms.get(position).getMinute()){
-                                    App.dbHelper.deleteAlarm(cursor.getInt(cursor.getColumnIndex(DBC.ID)));
-                                    alarms.remove(position);
-                                    alarmAdapter.notifyDataSetChanged();
-                                    Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
-                                    intent.setAction("com.javadi.alarm");
-                                    AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
-                                    PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),cursor.getInt(cursor.getColumnIndex(DBC.ID)),intent,PendingIntent.FLAG_UPDATE_CURRENT );
-                                    alarmManager.cancel(pendingIntent);
-                                }
-                            }
-                        }while (cursor.moveToNext());
+                        alarmAdapter.deleteAlarm(alarms.get(position).getId());
                     }
                 }
             }
@@ -101,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     pending=1;
                 }
-                Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_LONG).show();
                 intent.putExtra("pending_id",pending);
                 startActivity(intent);
             }

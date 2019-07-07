@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#7CF1AD"
     tools:context=".activity.AddAlarmsActivity">
 
     <Button
@@ -14,13 +16,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Set"
+        android:text="تایید"
+        android:textSize="20dp"
+        android:fontFamily="@font/vazir"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_picker" />
-
-
 
     <TextView
         android:id="@+id/tv_time_seted"
@@ -46,10 +48,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:timePickerMode="spinner"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></TimePicker>
+
 
 </android.support.constraint.ConstraintLayout>

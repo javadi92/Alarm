@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.insert(DBC.TABLE_NAME,null,contentValues);
     }
 
-    public int updateAlarm(int id,int hour,int minute,int available){
+    public Integer updateAlarm(int id,int hour,int minute,int available){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues contentValues=new ContentValues();
         contentValues.put(DBC.hour,hour);
@@ -65,7 +65,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.update(DBC.TABLE_NAME,contentValues,DBC.ID+"=?",new String[]{String.valueOf(id)});
     }
 
-    public int deleteAlarm(int id){
+    public Integer deleteAlarm(int id){
         SQLiteDatabase db=this.getWritableDatabase();
         return db.delete(DBC.TABLE_NAME,DBC.ID+"=?",new String[]{String.valueOf(id)});
     }

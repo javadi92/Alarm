@@ -57,6 +57,7 @@ import java.util.Date;
 
             @Override
             public void onClick(View v) {
+
                 if(Build.VERSION.SDK_INT < 23){
                     int getHour = timePicker.getCurrentHour();
                     int getMinute = timePicker.getCurrentMinute();
@@ -82,6 +83,7 @@ import java.util.Date;
                         e.printStackTrace();
                     }
                 }
+                finish();
                 //Toast.makeText(AddAlarmsActivity.this,"آلارم با موفقیت تنظیم شد",Toast.LENGTH_LONG).show();
             }
         });

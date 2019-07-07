@@ -2,9 +2,18 @@ package com.javadi.alarm.model;
 
 public class Alarm {
 
+    private int id;
     private int hour;
     private int minute;
     private int available;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getHour() {
         return hour;

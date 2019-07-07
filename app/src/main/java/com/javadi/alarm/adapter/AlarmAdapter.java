@@ -147,16 +147,33 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         }
     }
 
-    private void cancelAlarm(int pending_id){
-        Calendar calendar=Calendar.getInstance();
-        int h=calendar.getTime().getHours();
-        int m=calendar.getTime().getMinutes();
-        Toast.makeText(mContext,pending_id+"",Toast.LENGTH_LONG).show();
+    public void deleteAlarm(int id){
+
+        int row=App.dbHelper.deleteAlarm(id);
         Intent intent=new Intent(mContext, MyReceiver.class);
         intent.setAction("com.javadi.alarm");
         AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,pending_id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,row,intent,PendingIntent.FLAG_UPDATE_CURRENT );
         alarmManager.cancel(pendingIntent);
+        App.mediaPlayer.stop();
+        App.vibrate.cancel();
+        App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
+        App.sharedPreferences.edit().putInt("is_run",0).commit();
+        App.sharedPreferences.edit().putInt("pending_id",0).commit();
+        alarms.clear();
+        Cursor cursor=App.dbHelper.getAlarms();
+        if(cursor.moveToFirst()){
+            do{
+                Alarm alarm=new Alarm();
+                alarm.setId(cursor.getInt(0));
+                alarm.setHour(cursor.getInt(1));
+                alarm.setMinute(cursor.getInt(2));
+                alarm.setAvailable(cursor.getInt(3));
+                alarms.add(alarm);
+            }while (cursor.moveToNext());
+        }
+        notifyDataSetChanged();
     }
+
 
 }
