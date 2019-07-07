@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     Cursor cursor=App.dbHelper.getAlarms();
                     if(cursor.moveToFirst()){
                         alarmAdapter.deleteAlarm(alarms.get(position).getId());
+                        if(alarms.size()==0){
+                            tv.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("add_button",1);
                 Cursor cursor=App.dbHelper.getAlarms();
                 if(cursor.moveToLast()){
-                    pending=cursor.getInt(0)+1;
+                    pending=cursor.getInt(0);
                 }
                 else {
                     pending=1;
