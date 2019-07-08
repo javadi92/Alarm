@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,7 +67,23 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this,alarms.get(position).getMinute()+"",Toast.LENGTH_LONG).show();
                     Cursor cursor=App.dbHelper.getAlarms();
                     if(cursor.moveToFirst()){
+
+                        //cancel alarm
+                        Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
+                        intent.setAction("com.javadi.alarm");
+                        AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
+                        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),alarms.get(position).getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT );
+                        alarmManager.cancel(pendingIntent);
+                        App.mediaPlayer.stop();
+                        App.vibrate.cancel();
+                        App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
+                        App.sharedPreferences.edit().putInt("is_run",0).commit();
+                        App.sharedPreferences.edit().putInt("pending_id",0).commit();
+
+                        //delete from database
                         alarmAdapter.deleteAlarm(alarms.get(position).getId());
+
+                        //show textview that no alarms available to show
                         if(alarms.size()==0){
                             tv.setVisibility(View.VISIBLE);
                         }
@@ -85,8 +102,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
                 //intent.putExtra("add_button",1);
                 Cursor cursor=App.dbHelper.getAlarms();
-                if(cursor.moveToLast()){
-                    pending=cursor.getInt(0);
+                int count=cursor.getCount();
+                int n=0;
+                if(cursor.moveToFirst()){
+                    do{
+                        n++;
+                        if(n==count){
+                            pending=cursor.getInt(0)+1;
+                        }
+                    }while (cursor.moveToNext());
                 }
                 else {
                     pending=1;

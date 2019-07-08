@@ -65,7 +65,7 @@ public class StopActivity extends AppCompatActivity {
         }
 
 
-        sta.setOnSlideCompleteListener(new SlideToActView.OnSlideCompleteListener() {
+        sta.setOnSlideCompleteListener( new SlideToActView.OnSlideCompleteListener() {
             @Override
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
 
