@@ -16,7 +16,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.javadi.alarm.adapter.AlarmAdapter;
 import com.javadi.alarm.R;
 import com.javadi.alarm.database.DBC;
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     static RecyclerView recyclerView;
     TextView tv;
     public static AlarmAdapter alarmAdapter;
-    public static List<Alarm> alarms;
+    public static List<Alarm> alarms=new ArrayList<>();
     static int pending;
 
     @Override
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        alarms=new ArrayList<>();
+        //alarms=new ArrayList<>();
 
         getAlarms();
 
@@ -51,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(llm);
         alarmAdapter=new AlarmAdapter(getApplicationContext(),alarms);
         recyclerView.setAdapter(alarmAdapter);
-
 
         ItemTouchHelper.SimpleCallback simpleCallback=new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
             @Override
@@ -64,9 +62,10 @@ public class MainActivity extends AppCompatActivity {
                 final int position = viewHolder.getAdapterPosition(); //get position which is swipe
 
                 if (i == ItemTouchHelper.LEFT) {    //if swipe left
-                    //Toast.makeText(MainActivity.this,alarms.get(position).getMinute()+"",Toast.LENGTH_LONG).show();
-                    Cursor cursor=App.dbHelper.getAlarms();
-                    if(cursor.moveToFirst()){
+                    //Cursor cursor=App.dbHelper.getAlarms();
+                    if(alarms.size()>0){
+
+                        //Toast.makeText(MainActivity.this,alarms.get(position).getId()+"",Toast.LENGTH_LONG).show();
 
                         //cancel alarm
                         Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
@@ -131,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         if(cursor.moveToFirst()){
             do{
                 Alarm alarm=new Alarm();
+                alarm.setId(cursor.getInt(cursor.getColumnIndex(DBC.ID)));
                 alarm.setHour(cursor.getInt(cursor.getColumnIndex(DBC.hour)));
                 alarm.setMinute(cursor.getInt(cursor.getColumnIndex(DBC.minute)));
                 alarm.setAvailable(cursor.getInt(cursor.getColumnIndex(DBC.available)));

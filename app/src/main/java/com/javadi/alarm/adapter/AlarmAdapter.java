@@ -8,16 +8,14 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.javadi.alarm.R;
-import com.javadi.alarm.activity.AddAlarmsActivity;
+import com.javadi.alarm.activity.MainActivity;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
@@ -62,9 +60,15 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             myViewHolder.tvMinute.setTextColor(Color.GREEN);
         }
 
+        else if(alarms.get(i).getAvailable()==0){
+            myViewHolder.aSwitch.setChecked(false);
+            myViewHolder.tvHour.setTextColor(Color.WHITE);
+            myViewHolder.textView.setTextColor(Color.WHITE);
+            myViewHolder.tvMinute.setTextColor(Color.WHITE);
+        }
+
         final int h=Integer.parseInt(hour);
         final int m=Integer.parseInt(minute);
-
 
         myViewHolder.aSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
@@ -115,16 +119,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 }
             }
         });
-
-        /*myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent2=new Intent(myViewHolder.itemView.getContext(), AddAlarmsActivity.class);
-                intent2.putExtra("p_id",i);
-                myViewHolder.itemView.getContext().startActivity(intent2);
-            }
-        });*/
-
     }
 
     @Override
@@ -148,18 +142,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
     }
 
     public void deleteAlarm(int id){
-
         int row=App.dbHelper.deleteAlarm(id);
-        Intent intent=new Intent(mContext, MyReceiver.class);
-        intent.setAction("com.javadi.alarm");
-        AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
-        PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,row,intent,PendingIntent.FLAG_UPDATE_CURRENT );
-        alarmManager.cancel(pendingIntent);
-        App.mediaPlayer.stop();
-        App.vibrate.cancel();
-        App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
-        App.sharedPreferences.edit().putInt("is_run",0).commit();
-        App.sharedPreferences.edit().putInt("pending_id",0).commit();
+        //Toast.makeText(mContext,row+"",Toast.LENGTH_LONG).show();
         alarms.clear();
         Cursor cursor=App.dbHelper.getAlarms();
         if(cursor.moveToFirst()){
@@ -174,6 +158,4 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         }
         notifyDataSetChanged();
     }
-
-
 }
