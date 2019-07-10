@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.javadi.alarm.R;
-import com.javadi.alarm.activity.MainActivity;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
@@ -144,7 +143,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
     public void deleteAlarm(int id){
         int row=App.dbHelper.deleteAlarm(id);
         //Toast.makeText(mContext,row+"",Toast.LENGTH_LONG).show();
-        alarms.clear();
+        /*alarms.clear();
         Cursor cursor=App.dbHelper.getAlarms();
         if(cursor.moveToFirst()){
             do{
@@ -155,7 +154,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 alarm.setAvailable(cursor.getInt(3));
                 alarms.add(alarm);
             }while (cursor.moveToNext());
+        }*/
+        for(int i=0;i<alarms.size();i++){
+            if(alarms.get(i).getId()==id){
+                alarms.remove(i);
+                notifyItemRemoved(i);
+                //notifyItemRangeChanged(i, alarms.size());
+                //notifyDataSetChanged();
+                break;
+            }
         }
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 }
