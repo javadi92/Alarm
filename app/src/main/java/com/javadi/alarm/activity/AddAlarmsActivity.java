@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.R;
 import com.javadi.alarm.util.App;
@@ -57,10 +59,15 @@ import java.util.Date;
                     int getMinute = timePicker.getCurrentMinute();
                     setTime(getHour,getMinute);
                     try{
-                        App.dbHelper.insertAlarm(getHour,getMinute);
-                        MainActivity.alarms.clear();
-                        MainActivity.getAlarms();
-                        MainActivity.alarmAdapter.notifyDataSetChanged();
+                        if(checkAlarmExists(getHour,getMinute)){
+                            //Toast.makeText(AddAlarmsActivity.this,"این آلارم وجود دارد",Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            App.dbHelper.insertAlarm(getHour,getMinute);
+                            MainActivity.alarms.clear();
+                            MainActivity.getAlarms();
+                            MainActivity.alarmAdapter.notifyDataSetChanged();
+                        }
                     }catch (SQLException e){
                         e.printStackTrace();
                     }
@@ -69,16 +76,21 @@ import java.util.Date;
                     int getMinute = timePicker.getMinute();
                     setTime(getHour,getMinute);
                     try{
-                        App.dbHelper.insertAlarm(getHour,getMinute);
-                        MainActivity.alarms.clear();
-                        MainActivity.getAlarms();
-                        MainActivity.alarmAdapter.notifyDataSetChanged();
+                        if(checkAlarmExists(getHour,getMinute)){
+                            Toast.makeText(AddAlarmsActivity.this,"این آلارم وجود دارد",Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            App.dbHelper.insertAlarm(getHour,getMinute);
+                            MainActivity.alarms.clear();
+                            MainActivity.getAlarms();
+                            MainActivity.alarmAdapter.notifyDataSetChanged();
+                        }
                     }catch (SQLException e){
                         e.printStackTrace();
                     }
                 }
                 finish();
-                //Toast.makeText(AddAlarmsActivity.this,"آلارم با موفقیت تنظیم شد",Toast.LENGTH_LONG).show();
+                Toast.makeText(AddAlarmsActivity.this,"آلارم با موفقیت تنظیم شد",Toast.LENGTH_LONG).show();
             }
         });
         /*btnStop.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +123,15 @@ import java.util.Date;
         //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
     }
 
-    /*public void getTime(){
-        //SharedPreferences save_time=getSharedPreferences("save_time",MODE_PRIVATE);
-    }*/
+    private boolean checkAlarmExists(int hour,int minute){
+        Cursor cursor=App.dbHelper.getAlarms();
+        if(cursor.moveToFirst()){
+            do{
+                if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==hour && cursor.getInt(cursor.getColumnIndex(DBC.minute))==minute){
+                    return true;
+                }
+            }while (cursor.moveToNext());
+        }
+        return false;
+    }
 }

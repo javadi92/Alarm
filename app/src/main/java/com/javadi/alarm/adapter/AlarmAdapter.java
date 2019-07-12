@@ -76,10 +76,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 Cursor cursor=App.dbHelper.getAlarms();
                 if(cursor.moveToFirst()){
                     do{
-                        if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==h){
-                            if(cursor.getInt(cursor.getColumnIndex(DBC.minute))==m){
-                                id=cursor.getInt(0);
-                            }
+                        if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==h && cursor.getInt(cursor.getColumnIndex(DBC.minute))==m){
+                            id=cursor.getInt(0);
+                            break;
                         }
                     }while (cursor.moveToNext());
                 }
@@ -92,6 +91,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     intent.setAction("com.javadi.alarm");
                     AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
                     PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
+                    //Toast.makeText(mContext,id+"",Toast.LENGTH_LONG).show();
                     alarmManager.cancel(pendingIntent);
                     App.mediaPlayer.stop();
                     App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);

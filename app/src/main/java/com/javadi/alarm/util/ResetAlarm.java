@@ -5,9 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import java.util.Calendar;

@@ -16,6 +16,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.javadi.alarm.adapter.AlarmAdapter;
 import com.javadi.alarm.R;
 import com.javadi.alarm.database.DBC;
@@ -28,10 +29,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fabAddAlarm;
-    static RecyclerView recyclerView;
+    RecyclerView recyclerView;
     TextView tv;
     public static AlarmAdapter alarmAdapter;
-    public static List<Alarm> alarms=new ArrayList<>();
+    public static List<Alarm> alarms;
     static int pending;
 
     @Override
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //alarms=new ArrayList<>();
+        alarms=new ArrayList<>();
 
         getAlarms();
 
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.setAction("com.javadi.alarm");
                         AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
                         PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),alarms.get(position).getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT );
+                        //Toast.makeText(MainActivity.this,alarms.get(position).getId()+"",Toast.LENGTH_LONG).show();
                         alarmManager.cancel(pendingIntent);
                         App.mediaPlayer.stop();
                         App.vibrate.cancel();
@@ -111,8 +113,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }while (cursor.moveToNext());
                 }
+                else if(App.sharedPreferences.getInt("polomb",0)==1){
+                    pending=App.sharedPreferences.getInt("pending",0);
+                    App.sharedPreferences.edit().putInt("pending",pending+1).commit();
+                }
                 else {
                     pending=1;
+                    App.sharedPreferences.edit().putInt("polomb",1).commit();
+                    App.sharedPreferences.edit().putInt("pending",pending+1).commit();
                 }
                 //Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_LONG).show();
                 intent.putExtra("pending_id",pending);

@@ -3,16 +3,15 @@ package com.javadi.alarm.activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.AlarmManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.R;
@@ -20,7 +19,6 @@ import com.javadi.alarm.util.App;
 import com.ncorti.slidetoact.SlideToActView;
 import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
-import static com.javadi.alarm.activity.AddAlarmsActivity.sharedPreferences;
 
 public class StopActivity extends AppCompatActivity {
 
@@ -51,10 +49,8 @@ public class StopActivity extends AppCompatActivity {
             Cursor cursor=App.dbHelper.getAlarms();
             if(cursor.moveToFirst()){
                 do{
-                    if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==h){
-                        if(cursor.getInt(cursor.getColumnIndex(DBC.minute))==m){
-                            pendingId=cursor.getInt(0);
-                        }
+                    if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==h && cursor.getInt(cursor.getColumnIndex(DBC.minute))==m){
+                        pendingId=cursor.getInt(0);
                     }
                 }while (cursor.moveToNext());
             }
@@ -69,7 +65,7 @@ public class StopActivity extends AppCompatActivity {
             @Override
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
 
-                //Toast.makeText(getApplicationContext(),"آلارم متوقف شد",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"آلارم متوقف شد",Toast.LENGTH_LONG).show();
                 //Toast.makeText(getApplicationContext(),pendingId+"",Toast.LENGTH_LONG).show();
                 Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
                 intent.setAction("com.javadi.alarm");
