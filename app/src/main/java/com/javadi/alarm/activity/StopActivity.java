@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.R;
@@ -65,8 +64,8 @@ public class StopActivity extends AppCompatActivity {
             @Override
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
 
-                Toast.makeText(getApplicationContext(),"آلارم متوقف شد",Toast.LENGTH_LONG).show();
-                //Toast.makeText(getApplicationContext(),pendingId+"",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"آلارم متوقف شد",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),pendingId+"",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
                 intent.setAction("com.javadi.alarm");
                 AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
@@ -102,4 +101,5 @@ public class StopActivity extends AppCompatActivity {
             }
         }).start();
     }
+
 }

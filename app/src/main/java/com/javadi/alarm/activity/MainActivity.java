@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fabAddAlarm;
     RecyclerView recyclerView;
     TextView tv;
-    public static AlarmAdapter alarmAdapter;
-    public static List<Alarm> alarms;
+    AlarmAdapter alarmAdapter;
+    List<Alarm> alarms;
     static int pending;
 
     @Override
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         alarms=new ArrayList<>();
 
-        getAlarms();
+        //getAlarms();
 
         tv=(TextView)findViewById(R.id.tv);
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.setAction("com.javadi.alarm");
                         AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
                         PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),alarms.get(position).getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT );
-                        //Toast.makeText(MainActivity.this,alarms.get(position).getId()+"",Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this,alarms.get(position).getId()+"",Toast.LENGTH_SHORT).show();
                         alarmManager.cancel(pendingIntent);
                         App.mediaPlayer.stop();
                         App.vibrate.cancel();
@@ -101,29 +101,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
-                //intent.putExtra("add_button",1);
-                Cursor cursor=App.dbHelper.getAlarms();
-                int count=cursor.getCount();
-                int n=0;
-                if(cursor.moveToFirst()){
-                    do{
-                        n++;
-                        if(n==count){
-                            pending=cursor.getInt(0)+1;
-                        }
-                    }while (cursor.moveToNext());
-                }
-                else if(App.sharedPreferences.getInt("polomb",0)==1){
-                    pending=App.sharedPreferences.getInt("pending",0);
-                    App.sharedPreferences.edit().putInt("pending",pending+1).commit();
-                }
-                else {
-                    pending=1;
-                    App.sharedPreferences.edit().putInt("polomb",1).commit();
-                    App.sharedPreferences.edit().putInt("pending",pending+1).commit();
-                }
-                //Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_LONG).show();
-                intent.putExtra("pending_id",pending);
+                //pending=App.sharedPreferences.getInt("pending",1);
+                //App.sharedPreferences.edit().putInt("pending",pending+1).commit();
+                //Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_SHORT).show();
+                //intent.putExtra("pending_id",pending);
                 startActivity(intent);
             }
         });
@@ -133,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void getAlarms(){
+    public void getAlarms(){
         Cursor cursor= App.dbHelper.getAlarms();
         if(cursor.moveToFirst()){
             do{
@@ -155,5 +136,13 @@ public class MainActivity extends AppCompatActivity {
         if(alarms.size()>0){
             tv.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        alarms.clear();
+        getAlarms();
+        alarmAdapter.notifyDataSetChanged();
     }
 }
