@@ -56,6 +56,20 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         final int h=Integer.parseInt(hour);
         final int m=Integer.parseInt(minute);
 
+        if(alarms.get(i).getAvailable()==1){
+            myViewHolder.aSwitch.setChecked(true);
+            myViewHolder.tvHour.setTextColor(Color.parseColor("#0091EA"));
+            myViewHolder.textView.setTextColor(Color.parseColor("#0091EA"));
+            myViewHolder.tvMinute.setTextColor(Color.parseColor("#0091EA"));
+        }
+
+        else if(alarms.get(i).getAvailable()==0){
+            myViewHolder.aSwitch.setChecked(false);
+            myViewHolder.tvHour.setTextColor(Color.WHITE);
+            myViewHolder.textView.setTextColor(Color.WHITE);
+            myViewHolder.tvMinute.setTextColor(Color.WHITE);
+        }
+
         myViewHolder.aSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
@@ -88,6 +102,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
                     App.dbHelper.updateAlarm(id,h,m,0);
                     alarm2.setAvailable(0);
+                    alarms.set(i,alarm2);
+                    //notifyItemChanged(i);
+                    notifyDataSetChanged();
                 }
                 else {
                     myViewHolder.tvHour.setTextColor(Color.parseColor("#0091EA"));
@@ -108,27 +125,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
                     App.dbHelper.updateAlarm(id,h,m,1);
                     alarm2.setAvailable(1);
+                    alarms.set(i,alarm2);
+                    //notifyItemChanged(i);
+                    notifyDataSetChanged();
                 }
-                alarms.remove(i);
-                alarms.add(i,alarm2);
-                notifyItemChanged(i);
             }
         });
-
-
-        if(alarms.get(i).getAvailable()==1){
-            myViewHolder.aSwitch.setChecked(true);
-            myViewHolder.tvHour.setTextColor(Color.parseColor("#0091EA"));
-            myViewHolder.textView.setTextColor(Color.parseColor("#0091EA"));
-            myViewHolder.tvMinute.setTextColor(Color.parseColor("#0091EA"));
-        }
-
-        else if(alarms.get(i).getAvailable()==0){
-            myViewHolder.aSwitch.setChecked(false);
-            myViewHolder.tvHour.setTextColor(Color.WHITE);
-            myViewHolder.textView.setTextColor(Color.WHITE);
-            myViewHolder.tvMinute.setTextColor(Color.WHITE);
-        }
     }
 
     @Override
@@ -137,10 +139,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
     }
 
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
 
     class myViewHolder extends RecyclerView.ViewHolder{
 
@@ -154,6 +152,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             textView=(TextView)itemView.findViewById(R.id.textView);
             tvMinute=(TextView)itemView.findViewById(R.id.tv_minute);
             aSwitch=(SwitchButton)itemView.findViewById(R.id.switch_button);
+            this.setIsRecyclable(false);
         }
     }
 
@@ -162,7 +161,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         for(int i=0;i<alarms.size();i++){
             if(alarms.get(i).getId()==id){
                 alarms.remove(i);
-                notifyItemRemoved(i);
+                //notifyItemRemoved(i);
+                notifyDataSetChanged();
                 break;
             }
         }
