@@ -101,5 +101,4 @@ public class StopActivity extends AppCompatActivity {
             }
         }).start();
     }
-
 }

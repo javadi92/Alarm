@@ -2,9 +2,13 @@ package com.javadi.alarm.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.javadi.alarm.adapter.AlarmAdapter;
@@ -23,10 +28,15 @@ import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.util.App;
+import com.mohamadamin.persianmaterialdatetimepicker.time.RadialPickerLayout;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        TimePickerDialog.OnTimeSetListener {
 
     FloatingActionButton fabAddAlarm;
     RecyclerView recyclerView;
@@ -34,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     AlarmAdapter alarmAdapter;
     List<Alarm> alarms;
     static int pending;
+    private static final String TIMEPICKER = "TimePickerDialog";
+    int pendingId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,12 +112,91 @@ public class MainActivity extends AppCompatActivity {
         fabAddAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
-                //pending=App.sharedPreferences.getInt("pending",1);
-                //App.sharedPreferences.edit().putInt("pending",pending+1).commit();
-                //Toast.makeText(MainActivity.this,pending+"",Toast.LENGTH_SHORT).show();
-                //intent.putExtra("pending_id",pending);
-                startActivity(intent);
+                /*Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
+                startActivity(intent);*/
+
+                PersianCalendar now = new PersianCalendar();
+                com.mohamadamin.persianmaterialdatetimepicker.time.TimePickerDialog tpd =
+                        com.mohamadamin.persianmaterialdatetimepicker.time.TimePickerDialog.newInstance(new com.mohamadamin.persianmaterialdatetimepicker.time.TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+                                if(Build.VERSION.SDK_INT < 23){
+                                    int getHour = hourOfDay;
+                                    int getMinute = minute;
+
+                                    try{
+                                        if(checkAlarmExists(getHour,getMinute)){
+                                            Toast.makeText(MainActivity.this,"این آلارم وجود دارد",Toast.LENGTH_LONG).show();
+                                        }
+                                        else{
+                                            App.dbHelper.insertAlarm(getHour,getMinute);
+                                            Cursor cursor=App.dbHelper.getAlarms();
+                                            int count =cursor.getCount();
+                                            int n=0;
+                                            if(cursor.moveToFirst()){
+                                                do{
+                                                    n++;
+                                                    if(n==count){
+                                                        pendingId=cursor.getInt(0);
+                                                        break;
+                                                    }
+                                                }while (cursor.moveToNext());
+                                            }
+                                            setTime(getHour,getMinute,pendingId);
+                                        }
+                                    }catch (SQLException e){
+                                        e.printStackTrace();
+                                    }
+                                } else{
+                                    int getHour = hourOfDay;
+                                    int getMinute = minute;
+                                    try{
+                                        if(checkAlarmExists(getHour,getMinute)){
+                                            Toast.makeText(MainActivity.this,"این آلارم وجود دارد",Toast.LENGTH_LONG).show();
+                                        }
+                                        else{
+                                            App.dbHelper.insertAlarm(getHour,getMinute);
+                                            Cursor cursor=App.dbHelper.getAlarms();
+                                            int count =cursor.getCount();
+                                            int n=0;
+                                            if(cursor.moveToFirst()){
+                                                do{
+                                                    n++;
+                                                    if(n==count){
+                                                        pendingId=cursor.getInt(0);
+                                                        break;
+                                                    }
+                                                }while (cursor.moveToNext());
+                                            }
+                                            setTime(getHour,getMinute,pendingId);
+                                        }
+                                    }catch (SQLException e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                                //finish();
+                                //Toast.makeText(AddAlarmsActivity.this,pendingId+"",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this,"آلارم فعال شد",Toast.LENGTH_LONG).show();
+                                alarms.clear();
+                                getAlarms();
+                                if(alarms.size()==0){
+                                    tv.setVisibility(View.VISIBLE);
+                                }
+                                else{
+                                    tv.setVisibility(View.GONE);
+                                }
+                                alarmAdapter.notifyDataSetChanged();
+                            }
+                            }, now.get(PersianCalendar.HOUR_OF_DAY), now.get(PersianCalendar.MINUTE), true);
+                tpd.setThemeDark(true);
+                //tpd.setTypeface(fontName);
+                tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+
+                    }
+                });
+                tpd.show(getFragmentManager(), TIMEPICKER);
             }
         });
 
@@ -144,5 +235,37 @@ public class MainActivity extends AppCompatActivity {
         alarms.clear();
         getAlarms();
         alarmAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+    }
+
+    private void setTime(int Hour,int Minute,int id){
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,Hour);
+        calendar.set(Calendar.MINUTE,Minute);
+        calendar.set(Calendar.SECOND,0);
+        if(calendar.getTimeInMillis()< System.currentTimeMillis()){
+            calendar.add(Calendar.DATE,1);
+        }
+        Intent intent=new Intent(MainActivity.this,MyReceiver.class);
+        intent.setAction("com.javadi.alarm");
+        AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+    }
+
+    private boolean checkAlarmExists(int hour,int minute){
+        Cursor cursor=App.dbHelper.getAlarms();
+        if(cursor.moveToFirst()){
+            do{
+                if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==hour && cursor.getInt(cursor.getColumnIndex(DBC.minute))==minute){
+                    return true;
+                }
+            }while (cursor.moveToNext());
+        }
+        return false;
     }
 }

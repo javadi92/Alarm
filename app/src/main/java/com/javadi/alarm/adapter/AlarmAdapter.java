@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.util.App;
-import com.suke.widget.SwitchButton;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,6 +40,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         return new myViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull final myViewHolder myViewHolder, final int i) {
         String hour=alarms.get(i).getHour()+"";
@@ -57,22 +58,22 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         final int m=Integer.parseInt(minute);
 
         if(alarms.get(i).getAvailable()==1){
-            myViewHolder.aSwitch.setChecked(true);
-            myViewHolder.tvHour.setTextColor(Color.parseColor("#0091EA"));
-            myViewHolder.textView.setTextColor(Color.parseColor("#0091EA"));
-            myViewHolder.tvMinute.setTextColor(Color.parseColor("#0091EA"));
+            myViewHolder.switchCompat.setChecked(true);
+            myViewHolder.tvHour.setTextColor(Color.parseColor("#00C853"));
+            myViewHolder.textView.setTextColor(Color.parseColor("#00C853"));
+            myViewHolder.tvMinute.setTextColor(Color.parseColor("#00C853"));
         }
 
         else if(alarms.get(i).getAvailable()==0){
-            myViewHolder.aSwitch.setChecked(false);
+            myViewHolder.switchCompat.setChecked(false);
             myViewHolder.tvHour.setTextColor(Color.WHITE);
             myViewHolder.textView.setTextColor(Color.WHITE);
             myViewHolder.tvMinute.setTextColor(Color.WHITE);
         }
 
-        myViewHolder.aSwitch.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+        myViewHolder.switchCompat.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+            public void onClick(View v) {
                 int id=1;
                 Cursor cursor=App.dbHelper.getAlarms();
                 if(cursor.moveToFirst()){
@@ -87,29 +88,10 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 alarm2.setId(id);
                 alarm2.setHour(h);
                 alarm2.setMinute(m);
-                if(!isChecked){
-                    myViewHolder.tvHour.setTextColor(Color.WHITE);
-                    myViewHolder.textView.setTextColor(Color.WHITE);
-                    myViewHolder.tvMinute.setTextColor(Color.WHITE);
-                    Toast.makeText(mContext,"آلارم غیر فعال شد",Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(mContext, MyReceiver.class);
-                    intent.setAction("com.javadi.alarm");
-                    AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
-                    PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
-                    //Toast.makeText(mContext,id+"",Toast.LENGTH_SHORT).show();
-                    alarmManager.cancel(pendingIntent);
-                    App.mediaPlayer.stop();
-                    App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
-                    App.dbHelper.updateAlarm(id,h,m,0);
-                    alarm2.setAvailable(0);
-                    alarms.set(i,alarm2);
-                    //notifyItemChanged(i);
-                    notifyDataSetChanged();
-                }
-                else {
-                    myViewHolder.tvHour.setTextColor(Color.parseColor("#0091EA"));
-                    myViewHolder.textView.setTextColor(Color.parseColor("#0091EA"));
-                    myViewHolder.tvMinute.setTextColor(Color.parseColor("#0091EA"));
+                if(myViewHolder.switchCompat.isChecked()){
+                    myViewHolder.tvHour.setTextColor(Color.parseColor("#00C853"));
+                    myViewHolder.textView.setTextColor(Color.parseColor("#00C853"));
+                    myViewHolder.tvMinute.setTextColor(Color.parseColor("#00C853"));
                     Toast.makeText(mContext,"آلارم فعال شد",Toast.LENGTH_SHORT).show();
                     Calendar calendar=Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY,h);
@@ -126,8 +108,22 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     App.dbHelper.updateAlarm(id,h,m,1);
                     alarm2.setAvailable(1);
                     alarms.set(i,alarm2);
-                    //notifyItemChanged(i);
-                    notifyDataSetChanged();
+                }else {
+                    myViewHolder.tvHour.setTextColor(Color.WHITE);
+                    myViewHolder.textView.setTextColor(Color.WHITE);
+                    myViewHolder.tvMinute.setTextColor(Color.WHITE);
+                    Toast.makeText(mContext,"آلارم غیر فعال شد",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(mContext, MyReceiver.class);
+                    intent.setAction("com.javadi.alarm");
+                    AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
+                    PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
+                    //Toast.makeText(mContext,id+"",Toast.LENGTH_SHORT).show();
+                    alarmManager.cancel(pendingIntent);
+                    App.mediaPlayer.stop();
+                    App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
+                    App.dbHelper.updateAlarm(id,h,m,0);
+                    alarm2.setAvailable(0);
+                    alarms.set(i,alarm2);
                 }
             }
         });
@@ -139,20 +135,20 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
     }
 
 
-
     class myViewHolder extends RecyclerView.ViewHolder{
 
         TextView tvHour;
         TextView textView;
         TextView tvMinute;
-        SwitchButton aSwitch;
+        //SwitchButton aSwitch;
+        SwitchCompat switchCompat;
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
             tvHour=(TextView)itemView.findViewById(R.id.tv_hour);
             textView=(TextView)itemView.findViewById(R.id.textView);
             tvMinute=(TextView)itemView.findViewById(R.id.tv_minute);
-            aSwitch=(SwitchButton)itemView.findViewById(R.id.switch_button);
-            this.setIsRecyclable(false);
+            //aSwitch=(SwitchButton)itemView.findViewById(R.id.switch_button);
+            switchCompat=(SwitchCompat)itemView.findViewById(R.id.switch_compat);
         }
     }
 
@@ -161,8 +157,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         for(int i=0;i<alarms.size();i++){
             if(alarms.get(i).getId()==id){
                 alarms.remove(i);
-                //notifyItemRemoved(i);
-                notifyDataSetChanged();
+                notifyItemRemoved(i);
+                notifyItemRangeChanged(i, alarms.size());
+                //notifyDataSetChanged();
                 break;
             }
         }

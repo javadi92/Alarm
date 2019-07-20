@@ -13,15 +13,34 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="10dp"
+        android:layout_marginBottom="32dp"
         android:clickable="true"
-        app:text_style="bold"
-        app:text_size="25dp"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:text="به راست بکشید" />
+        app:layout_constraintVertical_bias="1.0"
+        app:text="به راست بکشید"
+        app:text_size="25dp"
+        app:text_style="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="25dp"
+        android:text="برای متوقف شدن آلارم دکمه زیر را به راست بکشید"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="@font/vazir"
+        app:layout_constraintBottom_toTopOf="@+id/example"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

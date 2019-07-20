@@ -1,12 +1,16 @@
  package com.javadi.alarm.activity;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -68,9 +72,6 @@ import java.util.Calendar;
                                 }while (cursor.moveToNext());
                             }
                             setTime(getHour,getMinute,pendingId);
-                            /*MainActivity.alarms.clear();
-                            MainActivity.getAlarms();
-                            MainActivity.alarmAdapter.notifyDataSetChanged();*/
                         }
                     }catch (SQLException e){
                         e.printStackTrace();
