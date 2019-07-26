@@ -71,7 +71,8 @@ public class StopActivity extends AppCompatActivity {
                 AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
                 PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),pendingId,intent,PendingIntent.FLAG_UPDATE_CURRENT );
                 alarmManager.cancel(pendingIntent);
-                App.mediaPlayer.stop();
+                //App.mediaPlayer.stop();
+                App.ringtoneAlarm.stop();
                 App.vibrate.cancel();
                 App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
                 App.sharedPreferences.edit().putInt("is_run",0).commit();
@@ -84,7 +85,7 @@ public class StopActivity extends AppCompatActivity {
                 finishAffinity();
             }
         });
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -99,6 +100,11 @@ public class StopActivity extends AppCompatActivity {
                     }
                 });
             }
-        }).start();
+        }).start();*/
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.javadi.alarm.R;
+import com.javadi.alarm.activity.MainActivity;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
@@ -27,6 +28,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
 
     private List<Alarm> alarms;
     private Context mContext;
+    private boolean checkAlarmExists=false;
 
     public AlarmAdapter(Context context,List<Alarm> alarms){
         this.mContext=context;
@@ -58,17 +60,24 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         final int m=Integer.parseInt(minute);
 
         if(alarms.get(i).getAvailable()==1){
+            checkAlarmExists=true;
             myViewHolder.switchCompat.setChecked(true);
-            myViewHolder.tvHour.setTextColor(Color.parseColor("#00C853"));
-            myViewHolder.textView.setTextColor(Color.parseColor("#00C853"));
-            myViewHolder.tvMinute.setTextColor(Color.parseColor("#00C853"));
+            myViewHolder.tvHour.setTextColor(Color.parseColor("#0A2DF1"));
+            myViewHolder.textView.setTextColor(Color.parseColor("#0A2DF1"));
+            myViewHolder.tvMinute.setTextColor(Color.parseColor("#0A2DF1"));
         }
 
         else if(alarms.get(i).getAvailable()==0){
             myViewHolder.switchCompat.setChecked(false);
-            myViewHolder.tvHour.setTextColor(Color.WHITE);
-            myViewHolder.textView.setTextColor(Color.WHITE);
-            myViewHolder.tvMinute.setTextColor(Color.WHITE);
+            myViewHolder.tvHour.setTextColor(Color.LTGRAY);
+            myViewHolder.textView.setTextColor(Color.LTGRAY);
+            myViewHolder.tvMinute.setTextColor(Color.LTGRAY);
+        }
+
+        if(checkAlarmExists){
+            Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+            alarmChanged.putExtra("alarmSet", true/*enabled*/);
+            mContext.sendBroadcast(alarmChanged);
         }
 
         myViewHolder.switchCompat.setOnClickListener(new View.OnClickListener() {
@@ -89,9 +98,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 alarm2.setHour(h);
                 alarm2.setMinute(m);
                 if(myViewHolder.switchCompat.isChecked()){
-                    myViewHolder.tvHour.setTextColor(Color.parseColor("#00C853"));
-                    myViewHolder.textView.setTextColor(Color.parseColor("#00C853"));
-                    myViewHolder.tvMinute.setTextColor(Color.parseColor("#00C853"));
+                    Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+                    alarmChanged.putExtra("alarmSet", true/*enabled*/);
+                    mContext.sendBroadcast(alarmChanged);
+                    checkAlarmExists=true;
+                    myViewHolder.tvHour.setTextColor(Color.parseColor("#0A2DF1"));
+                    myViewHolder.textView.setTextColor(Color.parseColor("#0A2DF1"));
+                    myViewHolder.tvMinute.setTextColor(Color.parseColor("#0A2DF1"));
                     Toast.makeText(mContext,"آلارم فعال شد",Toast.LENGTH_SHORT).show();
                     Calendar calendar=Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY,h);
@@ -109,9 +122,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     alarm2.setAvailable(1);
                     alarms.set(i,alarm2);
                 }else {
-                    myViewHolder.tvHour.setTextColor(Color.WHITE);
-                    myViewHolder.textView.setTextColor(Color.WHITE);
-                    myViewHolder.tvMinute.setTextColor(Color.WHITE);
+                    myViewHolder.tvHour.setTextColor(Color.LTGRAY);
+                    myViewHolder.textView.setTextColor(Color.LTGRAY);
+                    myViewHolder.tvMinute.setTextColor(Color.LTGRAY);
                     Toast.makeText(mContext,"آلارم غیر فعال شد",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(mContext, MyReceiver.class);
                     intent.setAction("com.javadi.alarm");
@@ -124,6 +137,11 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     App.dbHelper.updateAlarm(id,h,m,0);
                     alarm2.setAvailable(0);
                     alarms.set(i,alarm2);
+                    if(!checkActiveAlarm()){
+                        Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+                        alarmChanged.putExtra("alarmSet", false);
+                        mContext.sendBroadcast(alarmChanged);
+                    }
                 }
             }
         });
@@ -163,5 +181,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 break;
             }
         }
+    }
+
+    private boolean checkActiveAlarm(){
+        for(int i=0;i<alarms.size();i++){
+            if(alarms.get(i).getAvailable()==1){
+                return true;
+            }
+        }
+        return false;
     }
 }

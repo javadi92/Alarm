@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Vibrator;
 import com.javadi.alarm.R;
 import com.javadi.alarm.database.DBHelper;
@@ -15,10 +18,14 @@ public class App extends Application {
     public static DBHelper dbHelper;
     public static SharedPreferences sharedPreferences;
     public static Vibrator vibrate;
+    private Uri alarmTone;
+    public static Ringtone ringtoneAlarm;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        ringtoneAlarm = RingtoneManager.getRingtone(getApplicationContext(), alarmTone);
         mediaPlayer=MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
         mContext=getApplicationContext();
         dbHelper=DBHelper.getInstance(mContext);

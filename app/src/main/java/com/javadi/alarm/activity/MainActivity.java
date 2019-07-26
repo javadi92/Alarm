@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.javadi.alarm.adapter.AlarmAdapter;
 import com.javadi.alarm.R;
 import com.javadi.alarm.database.DBC;
@@ -30,7 +29,6 @@ import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.util.App;
 import com.mohamadamin.persianmaterialdatetimepicker.time.RadialPickerLayout;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -92,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements
                         App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
                         App.sharedPreferences.edit().putInt("is_run",0).commit();
                         App.sharedPreferences.edit().putInt("pending_id",0).commit();
+
+                        Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+                        alarmChanged.putExtra("alarmSet", false/*enabled*/);
+                        MainActivity.this.sendBroadcast(alarmChanged);
 
                         //delete from database
                         alarmAdapter.deleteAlarm(alarms.get(position).getId());
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements
         calendar.set(Calendar.HOUR_OF_DAY,Hour);
         calendar.set(Calendar.MINUTE,Minute);
         calendar.set(Calendar.SECOND,0);
+        calendar.add(Calendar.MILLISECOND,0);
         if(calendar.getTimeInMillis()< System.currentTimeMillis()){
             calendar.add(Calendar.DATE,1);
         }
@@ -254,7 +257,16 @@ public class MainActivity extends AppCompatActivity implements
         intent.setAction("com.javadi.alarm");
         AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
         PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+        if(Build.VERSION.SDK_INT>18){
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+        else{
+            alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+        Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+        alarmChanged.putExtra("alarmSet", true/*enabled*/);
+        MainActivity.this.sendBroadcast(alarmChanged);
     }
 
     private boolean checkAlarmExists(int hour,int minute){

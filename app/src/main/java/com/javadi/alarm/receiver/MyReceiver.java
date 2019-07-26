@@ -15,10 +15,11 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().equalsIgnoreCase("com.javadi.alarm")){
-            App.mediaPlayer.start();
+            //App.mediaPlayer.start();
+            App.ringtoneAlarm.play();
 
             long[] pattern = {0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
-            App.vibrate.vibrate(pattern,-1);
+            App.vibrate.vibrate(pattern,0);
 
             Intent lockIntent = new Intent(context, StopActivity.class);
             lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
