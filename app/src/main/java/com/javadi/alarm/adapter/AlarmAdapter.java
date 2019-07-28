@@ -132,8 +132,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
                     //Toast.makeText(mContext,id+"",Toast.LENGTH_SHORT).show();
                     alarmManager.cancel(pendingIntent);
-                    App.mediaPlayer.stop();
-                    App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
+                    //App.mediaPlayer.stop();
+                    //App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
                     App.dbHelper.updateAlarm(id,h,m,0);
                     alarm2.setAvailable(0);
                     alarms.set(i,alarm2);

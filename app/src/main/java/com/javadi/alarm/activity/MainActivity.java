@@ -26,6 +26,7 @@ import com.javadi.alarm.R;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
 import com.javadi.alarm.receiver.MyReceiver;
+import com.javadi.alarm.service.MyService;
 import com.javadi.alarm.util.App;
 import com.mohamadamin.persianmaterialdatetimepicker.time.RadialPickerLayout;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(App.sharedPreferences.getBoolean("stop_activity",false)){
+            Intent intent2=new Intent(MainActivity.this,StopActivity.class);
+            startActivity(intent2);
+        }
 
         alarms=new ArrayList<>();
 
@@ -85,9 +91,12 @@ public class MainActivity extends AppCompatActivity implements
                         PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),alarms.get(position).getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT );
                         //Toast.makeText(MainActivity.this,alarms.get(position).getId()+"",Toast.LENGTH_SHORT).show();
                         alarmManager.cancel(pendingIntent);
-                        App.mediaPlayer.stop();
-                        App.vibrate.cancel();
-                        App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
+                        //App.mediaPlayer.stop();
+                        //App.vibrate.cancel();
+
+                        Intent stopservice=new Intent(MainActivity.this, MyService.class);
+                        stopService(stopservice);
+                        //App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
                         App.sharedPreferences.edit().putInt("is_run",0).commit();
                         App.sharedPreferences.edit().putInt("pending_id",0).commit();
 
@@ -190,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
                                 alarmAdapter.notifyDataSetChanged();
                             }
                             }, now.get(PersianCalendar.HOUR_OF_DAY), now.get(PersianCalendar.MINUTE), true);
-                tpd.setThemeDark(true);
+                tpd.setThemeDark(false);
                 //tpd.setTypeface(fontName);
                 tpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
@@ -258,12 +267,19 @@ public class MainActivity extends AppCompatActivity implements
         AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
         PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
-        if(Build.VERSION.SDK_INT>18){
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        if(Build.VERSION.SDK_INT>23){
+            //alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
         }
         else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
         }
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        else
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);*/
         Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
         alarmChanged.putExtra("alarmSet", true/*enabled*/);
         MainActivity.this.sendBroadcast(alarmChanged);

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.R;
+import com.javadi.alarm.service.MyService;
 import com.javadi.alarm.util.App;
 import com.ncorti.slidetoact.SlideToActView;
 import org.jetbrains.annotations.NotNull;
@@ -71,17 +72,16 @@ public class StopActivity extends AppCompatActivity {
                 AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
                 PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),pendingId,intent,PendingIntent.FLAG_UPDATE_CURRENT );
                 alarmManager.cancel(pendingIntent);
-                //App.mediaPlayer.stop();
-                App.ringtoneAlarm.stop();
-                App.vibrate.cancel();
-                App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
+
+                //App.ringtoneAlarm.stop();
+                Intent stopservice=new Intent(StopActivity.this, MyService.class);
+                stopService(stopservice);
+                //App.vibrate.cancel();
+                //App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
                 App.sharedPreferences.edit().putInt("is_run",0).commit();
                 App.sharedPreferences.edit().putInt("pending_id",0).commit();
-                /*SharedPreferences.Editor editor=sharedPreferences.edit();
-                editor.putInt("h",00);
-                editor.putInt("m",00);
-                editor.commit();
-                editor.apply();*/
+
+                App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
                 finishAffinity();
             }
         });
