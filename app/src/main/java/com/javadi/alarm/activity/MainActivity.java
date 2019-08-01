@@ -123,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements
         fabAddAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent=new Intent(MainActivity.this, AddAlarmsActivity.class);
-                startActivity(intent);*/
 
                 PersianCalendar now = new PersianCalendar();
                 com.mohamadamin.persianmaterialdatetimepicker.time.TimePickerDialog tpd =
@@ -268,18 +266,12 @@ public class MainActivity extends AppCompatActivity implements
         PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
         if(Build.VERSION.SDK_INT>23){
-            //alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
         }
         else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
         }
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        else
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);*/
+
         Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
         alarmChanged.putExtra("alarmSet", true/*enabled*/);
         MainActivity.this.sendBroadcast(alarmChanged);

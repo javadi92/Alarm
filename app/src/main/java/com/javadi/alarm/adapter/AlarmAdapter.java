@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -28,6 +29,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
 
     private List<Alarm> alarms;
     private Context mContext;
+
+    //Variable to show alarm icon in statusbar
     private boolean checkAlarmExists=false;
 
     public AlarmAdapter(Context context,List<Alarm> alarms){
@@ -45,8 +48,11 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final myViewHolder myViewHolder, final int i) {
+
         String hour=alarms.get(i).getHour()+"";
         String minute=alarms.get(i).getMinute()+"";
+
+        //show numbers less 10 in 0number like 03
         if(alarms.get(i).getHour()<10){
             hour="0"+hour;
         }
@@ -74,12 +80,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             myViewHolder.tvMinute.setTextColor(Color.LTGRAY);
         }
 
+        //show alarm icon after alarm set in statusbar
         if(checkAlarmExists){
             Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
             alarmChanged.putExtra("alarmSet", true/*enabled*/);
             mContext.sendBroadcast(alarmChanged);
         }
 
+        //handle switchbutton actions
         myViewHolder.switchCompat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,14 +118,23 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     calendar.set(Calendar.HOUR_OF_DAY,h);
                     calendar.set(Calendar.MINUTE,m);
                     calendar.set(Calendar.SECOND,0);
+
                     if(calendar.getTimeInMillis()< System.currentTimeMillis()){
+                        //add one day to calender time
                         calendar.add(Calendar.DATE,1);
                     }
                     Intent intent=new Intent(mContext,MyReceiver.class);
                     intent.setAction("com.javadi.alarm");
                     AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
                     PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+
+                    //prevent that os freez alarm in doze mode
+                    if(Build.VERSION.SDK_INT>23){
+                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                    }
+                    else{
+                        alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                    }
                     App.dbHelper.updateAlarm(id,h,m,1);
                     alarm2.setAvailable(1);
                     alarms.set(i,alarm2);
@@ -130,7 +147,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     intent.setAction("com.javadi.alarm");
                     AlarmManager alarmManager=(AlarmManager)mContext.getSystemService(mContext.ALARM_SERVICE);
                     PendingIntent pendingIntent=PendingIntent.getBroadcast(mContext,id,intent,PendingIntent.FLAG_UPDATE_CURRENT );
-                    //Toast.makeText(mContext,id+"",Toast.LENGTH_SHORT).show();
+
                     alarmManager.cancel(pendingIntent);
                     //App.mediaPlayer.stop();
                     //App.mediaPlayer= MediaPlayer.create(mContext,R.raw.alarm2);
@@ -158,14 +175,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         TextView tvHour;
         TextView textView;
         TextView tvMinute;
-        //SwitchButton aSwitch;
         SwitchCompat switchCompat;
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
             tvHour=(TextView)itemView.findViewById(R.id.tv_hour);
             textView=(TextView)itemView.findViewById(R.id.textView);
             tvMinute=(TextView)itemView.findViewById(R.id.tv_minute);
-            //aSwitch=(SwitchButton)itemView.findViewById(R.id.switch_button);
             switchCompat=(SwitchCompat)itemView.findViewById(R.id.switch_compat);
         }
     }
@@ -176,8 +191,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             if(alarms.get(i).getId()==id){
                 alarms.remove(i);
                 notifyItemRemoved(i);
+
+                //rearange item position after delete one item
                 notifyItemRangeChanged(i, alarms.size());
-                //notifyDataSetChanged();
                 break;
             }
         }

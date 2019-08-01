@@ -18,19 +18,22 @@ public class MyReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         if(intent.getAction().equalsIgnoreCase("com.javadi.alarm")){
             //App.mediaPlayer.start();
             //App.ringtoneAlarm.play();
             Intent service=new Intent(context, MyService.class);
-            context.startService(service);
+
+            if(Build.VERSION.SDK_INT>=26){
+                context.startForegroundService(service);
+            }
+            else {
+                context.startService(service);
+            }
 
 
             App.sharedPreferences.edit().putBoolean("stop_activity",true).commit();
 
-            App.audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
-            App.audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
-            App.audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
 
             long[] pattern = {0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
             //App.vibrate.vibrate(pattern,0);
@@ -40,4 +43,5 @@ public class MyReceiver extends BroadcastReceiver {
             context.startActivity(lockIntent);
         }
     }
+
 }
