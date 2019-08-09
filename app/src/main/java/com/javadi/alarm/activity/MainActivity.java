@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements
 
     FloatingActionButton fabAddAlarm;
     RecyclerView recyclerView;
-    TextView tv;
+    TextView tv,tv2;
     AlarmAdapter alarmAdapter;
     List<Alarm> alarms;
     static int pending;
@@ -51,9 +50,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(App.sharedPreferences.getBoolean("stop_activity",false)){
-            Intent intent2=new Intent(MainActivity.this,StopActivity.class);
-            startActivity(intent2);
+        if(MyService.ringtoneAlarm!=null){
+            if(MyService.ringtoneAlarm.isPlaying()){
+                Intent intent2=new Intent(MainActivity.this,StopActivity.class);
+                startActivity(intent2);
+            }
         }
 
         alarms=new ArrayList<>();
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements
         //getAlarms();
 
         tv=(TextView)findViewById(R.id.tv);
+        tv2=(TextView)findViewById(R.id.tv2);
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager llm=new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements
                         //show textview that no alarms available to show
                         if(alarms.size()==0){
                             tv.setVisibility(View.VISIBLE);
+                            tv2.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -190,9 +193,11 @@ public class MainActivity extends AppCompatActivity implements
                                 getAlarms();
                                 if(alarms.size()==0){
                                     tv.setVisibility(View.VISIBLE);
+                                    tv2.setVisibility(View.VISIBLE);
                                 }
                                 else{
                                     tv.setVisibility(View.GONE);
+                                    tv2.setVisibility(View.GONE);
                                 }
                                 alarmAdapter.notifyDataSetChanged();
                             }
@@ -211,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if(alarms.size()>0){
             tv.setVisibility(View.GONE);
+            tv2.setVisibility(View.GONE);
         }
     }
 
@@ -235,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         if(alarms.size()>0){
             tv.setVisibility(View.GONE);
+            tv2.setVisibility(View.GONE);
         }
     }
 
@@ -271,10 +278,16 @@ public class MainActivity extends AppCompatActivity implements
         else{
             alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
         }
+        if(Build.VERSION.SDK_INT<22){
+            Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+            alarmChanged.putExtra("alarmSet", true);
+            MainActivity.this.sendBroadcast(alarmChanged);
+            //alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+        else{
+            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+        }
 
-        Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
-        alarmChanged.putExtra("alarmSet", true/*enabled*/);
-        MainActivity.this.sendBroadcast(alarmChanged);
     }
 
     private boolean checkAlarmExists(int hour,int minute){

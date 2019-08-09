@@ -20,10 +20,10 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         if(intent.getAction().equalsIgnoreCase("com.javadi.alarm")){
-            //App.mediaPlayer.start();
-            //App.ringtoneAlarm.play();
+
             Intent service=new Intent(context, MyService.class);
 
+            //start service to play music and vibrate device
             if(Build.VERSION.SDK_INT>=26){
                 context.startForegroundService(service);
             }
@@ -31,13 +31,7 @@ public class MyReceiver extends BroadcastReceiver {
                 context.startService(service);
             }
 
-
-            App.sharedPreferences.edit().putBoolean("stop_activity",true).commit();
-
-
-            long[] pattern = {0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
-            //App.vibrate.vibrate(pattern,0);
-
+            //show stop activity
             Intent lockIntent = new Intent(context, StopActivity.class);
             lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(lockIntent);

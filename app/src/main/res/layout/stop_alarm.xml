@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#6DAAF8"
@@ -37,7 +38,7 @@
         android:textSize="25dp"
         android:text="برای متوقف شدن آلارم دکمه زیر را به راست بکشید"
         android:gravity="center"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/white"
         android:fontFamily="@font/vazir"
         app:layout_constraintBottom_toTopOf="@+id/example"
         app:layout_constraintEnd_toEndOf="parent"

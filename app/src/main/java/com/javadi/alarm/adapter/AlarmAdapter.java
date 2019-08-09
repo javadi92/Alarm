@@ -75,9 +75,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
 
         else if(alarms.get(i).getAvailable()==0){
             myViewHolder.switchCompat.setChecked(false);
-            myViewHolder.tvHour.setTextColor(Color.LTGRAY);
-            myViewHolder.textView.setTextColor(Color.LTGRAY);
-            myViewHolder.tvMinute.setTextColor(Color.LTGRAY);
+            myViewHolder.tvHour.setTextColor(Color.GRAY);
+            myViewHolder.textView.setTextColor(Color.GRAY);
+            myViewHolder.tvMinute.setTextColor(Color.GRAY);
         }
 
         //show alarm icon after alarm set in statusbar
@@ -106,9 +106,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 alarm2.setHour(h);
                 alarm2.setMinute(m);
                 if(myViewHolder.switchCompat.isChecked()){
-                    Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
-                    alarmChanged.putExtra("alarmSet", true/*enabled*/);
-                    mContext.sendBroadcast(alarmChanged);
                     checkAlarmExists=true;
                     myViewHolder.tvHour.setTextColor(Color.parseColor("#0A2DF1"));
                     myViewHolder.textView.setTextColor(Color.parseColor("#0A2DF1"));
@@ -135,13 +132,23 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     else{
                         alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
                     }
+
+                    if(Build.VERSION.SDK_INT<22){
+                        Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+                        alarmChanged.putExtra("alarmSet", true);
+                        mContext.sendBroadcast(alarmChanged);
+                        //alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                    }
+                    else{
+                        alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+                    }
                     App.dbHelper.updateAlarm(id,h,m,1);
                     alarm2.setAvailable(1);
                     alarms.set(i,alarm2);
                 }else {
-                    myViewHolder.tvHour.setTextColor(Color.LTGRAY);
-                    myViewHolder.textView.setTextColor(Color.LTGRAY);
-                    myViewHolder.tvMinute.setTextColor(Color.LTGRAY);
+                    myViewHolder.tvHour.setTextColor(Color.GRAY);
+                    myViewHolder.textView.setTextColor(Color.GRAY);
+                    myViewHolder.tvMinute.setTextColor(Color.GRAY);
                     Toast.makeText(mContext,"آلارم غیر فعال شد",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(mContext, MyReceiver.class);
                     intent.setAction("com.javadi.alarm");

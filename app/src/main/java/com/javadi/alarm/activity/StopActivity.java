@@ -2,11 +2,15 @@ package com.javadi.alarm.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,6 +28,8 @@ public class StopActivity extends AppCompatActivity {
 
     static int pendingId;
     SlideToActView sta;
+    ConstraintLayout cl;
+    int count=0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,10 +42,10 @@ public class StopActivity extends AppCompatActivity {
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         sta = (SlideToActView) findViewById(R.id.example);
-
+        cl=(ConstraintLayout)findViewById(R.id.cl);
         Calendar calendar=Calendar.getInstance();
         int h=calendar.getTime().getHours();
-        int m=calendar.getTime().getMinutes();
+        final int m=calendar.getTime().getMinutes();
 
         int is_run=App.sharedPreferences.getInt("is_run",0);
         if(is_run==0){
@@ -73,34 +79,52 @@ public class StopActivity extends AppCompatActivity {
                 PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),pendingId,intent,PendingIntent.FLAG_UPDATE_CURRENT );
                 alarmManager.cancel(pendingIntent);
 
-                //App.ringtoneAlarm.stop();
                 Intent stopservice=new Intent(StopActivity.this, MyService.class);
                 stopService(stopservice);
-                //App.vibrate.cancel();
-                //App.mediaPlayer= MediaPlayer.create(getApplicationContext(),R.raw.alarm2);
+
                 App.sharedPreferences.edit().putInt("is_run",0).commit();
                 App.sharedPreferences.edit().putInt("pending_id",0).commit();
 
                 App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
+
+
+                /*int end=App.sharedPreferences.getInt("volume",0);
+                for(int i=0;i<end ;i++){
+                    App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
+                }
+                App.sharedPreferences.edit().putInt("volume",0).commit();*/
+
                 finishAffinity();
             }
         });
-        /*new Thread(new Runnable() {
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(20000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        finishAffinity();
+
+                while (count<10000){
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(count%2==0){
+                                cl.setBackgroundColor(Color.parseColor("#6DAAF8"));
+                            }
+                            else{
+                                cl.setBackgroundColor(Color.RED);
+                            }
+                        }
+                    });
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                });
+                    count++;
+                }
             }
-        }).start();*/
+        }).start();
+
     }
 
     @Override

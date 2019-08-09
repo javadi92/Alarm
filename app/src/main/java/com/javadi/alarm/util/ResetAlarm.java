@@ -6,6 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
+
+import com.javadi.alarm.activity.MainActivity;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import java.util.Calendar;
@@ -31,7 +34,25 @@ public class ResetAlarm extends BroadcastReceiver {
                         intent2.setAction("com.javadi.alarm");
                         AlarmManager alarmManager=(AlarmManager)context.getSystemService(context.ALARM_SERVICE);
                         PendingIntent pendingIntent=PendingIntent.getBroadcast(context.getApplicationContext(),pend,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
-                        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+
+                        if(Build.VERSION.SDK_INT>23){
+                            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                        }
+                        else{
+                            alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                        }
+
+                        if(Build.VERSION.SDK_INT<22){
+                            Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+                            alarmChanged.putExtra("alarmSet", true);
+                            context.sendBroadcast(alarmChanged);
+                            //alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+                        }
+                        else{
+                            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+                        }
+
+
                     }while (cursor.moveToNext());
                 }
         }
