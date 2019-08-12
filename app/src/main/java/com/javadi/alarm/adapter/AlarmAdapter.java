@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.javadi.alarm.R;
+import com.javadi.alarm.activity.AlarmSettingsActivity;
 import com.javadi.alarm.activity.MainActivity;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.model.Alarm;
@@ -64,6 +65,18 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
 
         final int h=Integer.parseInt(hour);
         final int m=Integer.parseInt(minute);
+
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,h);
+        calendar.set(Calendar.MINUTE,m);
+        calendar.set(Calendar.SECOND,0);
+
+        if(calendar.getTimeInMillis()<System.currentTimeMillis()){
+            myViewHolder.tvDay.setText("فردا");
+        }
+        else {
+            myViewHolder.tvDay.setText("امروز");
+        }
 
         if(alarms.get(i).getAvailable()==1){
             checkAlarmExists=true;
@@ -169,6 +182,15 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 }
             }
         });
+
+        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //becarefull that never use mContext
+                Intent start=new Intent(myViewHolder.itemView.getContext(), AlarmSettingsActivity.class);
+                myViewHolder.itemView.getContext().startActivity(start);
+            }
+        });
     }
 
     @Override
@@ -182,12 +204,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         TextView tvHour;
         TextView textView;
         TextView tvMinute;
+        TextView tvDay;
         SwitchCompat switchCompat;
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
             tvHour=(TextView)itemView.findViewById(R.id.tv_hour);
             textView=(TextView)itemView.findViewById(R.id.textView);
             tvMinute=(TextView)itemView.findViewById(R.id.tv_minute);
+            tvDay=(TextView)itemView.findViewById(R.id.tv_day);
             switchCompat=(SwitchCompat)itemView.findViewById(R.id.switch_compat);
         }
     }

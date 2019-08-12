@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements
                                             Toast.makeText(MainActivity.this,"این آلارم وجود دارد",Toast.LENGTH_LONG).show();
                                         }
                                         else{
+                                            Toast.makeText(MainActivity.this,"آلارم فعال شد",Toast.LENGTH_LONG).show();
                                             App.dbHelper.insertAlarm(getHour,getMinute);
                                             Cursor cursor=App.dbHelper.getAlarms();
                                             int count =cursor.getCount();
@@ -167,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements
                                             Toast.makeText(MainActivity.this,"این آلارم وجود دارد",Toast.LENGTH_LONG).show();
                                         }
                                         else{
+                                            Toast.makeText(MainActivity.this,"آلارم فعال شد",Toast.LENGTH_LONG).show();
                                             App.dbHelper.insertAlarm(getHour,getMinute);
                                             Cursor cursor=App.dbHelper.getAlarms();
                                             int count =cursor.getCount();
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                                 //finish();
                                 //Toast.makeText(AddAlarmsActivity.this,pendingId+"",Toast.LENGTH_SHORT).show();
-                                Toast.makeText(MainActivity.this,"آلارم فعال شد",Toast.LENGTH_LONG).show();
+
                                 alarms.clear();
                                 getAlarms();
                                 if(alarms.size()==0){

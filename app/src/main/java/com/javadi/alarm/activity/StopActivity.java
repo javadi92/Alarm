@@ -43,9 +43,9 @@ public class StopActivity extends AppCompatActivity {
 
         sta = (SlideToActView) findViewById(R.id.example);
         cl=(ConstraintLayout)findViewById(R.id.cl);
-        Calendar calendar=Calendar.getInstance();
-        int h=calendar.getTime().getHours();
-        final int m=calendar.getTime().getMinutes();
+
+        int h=App.sharedPreferences.getInt("hour_trigered",-1);
+        int m=App.sharedPreferences.getInt("minute_trigred",-1);
 
         int is_run=App.sharedPreferences.getInt("is_run",0);
         if(is_run==0){
@@ -57,6 +57,8 @@ public class StopActivity extends AppCompatActivity {
                 do{
                     if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==h && cursor.getInt(cursor.getColumnIndex(DBC.minute))==m){
                         pendingId=cursor.getInt(0);
+                        App.dbHelper.updateAlarm(cursor.getInt(0),h,
+                                m,0);
                     }
                 }while (cursor.moveToNext());
             }
@@ -88,11 +90,13 @@ public class StopActivity extends AppCompatActivity {
                 App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
 
 
-                /*int end=App.sharedPreferences.getInt("volume",0);
+
+
+                int end=App.sharedPreferences.getInt("volume",0);
                 for(int i=0;i<end ;i++){
                     App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
                 }
-                App.sharedPreferences.edit().putInt("volume",0).commit();*/
+                App.sharedPreferences.edit().putInt("volume",0).commit();
 
                 finishAffinity();
             }

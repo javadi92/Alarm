@@ -39,15 +39,17 @@ public class MyService extends Service {
         alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtoneAlarm = RingtoneManager.getRingtone(this, alarmTone);
         am= (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        am.adjustVolume(AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_PLAY_SOUND);
         mediaPlayer=MediaPlayer.create(getApplicationContext(),alarmTone);
-        vibrate=(Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //vibrate=(Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
         pattern = new long[]{0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        vibrate.vibrate(pattern,0);
+        //vibrate.vibrate(pattern,0);
         //ringtoneAlarm.play();
 
         mediaPlayer.setLooping(true);
@@ -85,47 +87,22 @@ public class MyService extends Service {
             startForeground(2, notification);
         }
 
+        int volume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        App.sharedPreferences.edit().putInt("volume",volume);
+
+        for(int j=volume;j>=0;j--){
+            App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
+        }
+
 
         //increase volume of phone gradually
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mediaPlayer.setVolume(0.1f,0.1f);
-                for(int i=2;i<=10;i++){
-                    switch (i){
-                        case (2):
-                            mediaPlayer.setVolume(0.2f,0.2f);
-                            break;
-                        case (3):
-                            mediaPlayer.setVolume(0.3f,0.3f);
-                            break;
-                        case (4):
-                            mediaPlayer.setVolume(0.4f,0.4f);
-                            break;
-                        case (5):
-                            mediaPlayer.setVolume(0.5f,0.5f);
-                            break;
-                        case (6):
-                            mediaPlayer.setVolume(0.6f,0.6f);
-                            break;
-                        case (7):
-                            mediaPlayer.setVolume(0.7f,0.7f);
-                            break;
-                        case (8):
-                            mediaPlayer.setVolume(0.8f,0.8f);
-                            break;
-                        case (9):
-                            mediaPlayer.setVolume(0.9f,0.9f);
-                            break;
-                        case (10):
-                            mediaPlayer.setVolume(1f,1f);
-                            break;
-                        default:
-                            mediaPlayer.setVolume(0.1f,0.1f);
-                            break;
-                    }
 
-                    App.sharedPreferences.edit().putInt("volume",i).commit();
+                for(int i=0;i<16;i++){
+                    am.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
+
                     try {
                         Thread.sleep(4000);
                     } catch (InterruptedException e) {
@@ -148,7 +125,6 @@ public class MyService extends Service {
         super.onDestroy();
         //ringtoneAlarm.stop();
         mediaPlayer.stop();
-        vibrate.cancel();
+        //vibrate.cancel();
     }
-
 }

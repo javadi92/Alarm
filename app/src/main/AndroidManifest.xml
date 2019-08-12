@@ -50,6 +50,9 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".activity.AlarmSettingsActivity">
+
+        </activity>
     </application>
 
 </manifest>
