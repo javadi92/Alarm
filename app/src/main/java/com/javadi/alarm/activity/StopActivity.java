@@ -8,26 +8,31 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 import com.javadi.alarm.database.DBC;
 import com.javadi.alarm.receiver.MyReceiver;
 import com.javadi.alarm.R;
 import com.javadi.alarm.service.MyService;
 import com.javadi.alarm.util.App;
-import com.ncorti.slidetoact.SlideToActView;
-import org.jetbrains.annotations.NotNull;
+import com.javadi.alarm.util.SnoozShiftTime;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class StopActivity extends AppCompatActivity {
 
     static int pendingId;
-    SlideToActView sta;
+    Button btnStop,btnSnooz;
     ConstraintLayout cl;
     int count=0;
 
@@ -41,7 +46,8 @@ public class StopActivity extends AppCompatActivity {
         win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        sta = (SlideToActView) findViewById(R.id.example);
+        btnStop=(Button)findViewById(R.id.btn_stop);
+        btnSnooz=(Button)findViewById(R.id.btn_snooz);
         cl=(ConstraintLayout)findViewById(R.id.cl);
 
         int h=App.sharedPreferences.getInt("hour_trigered",-1);
@@ -69,10 +75,9 @@ public class StopActivity extends AppCompatActivity {
         }
 
 
-        sta.setOnSlideCompleteListener( new SlideToActView.OnSlideCompleteListener() {
+        btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSlideComplete(@NotNull SlideToActView slideToActView) {
-
+            public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),"آلارم متوقف شد",Toast.LENGTH_SHORT).show();
                 //Toast.makeText(getApplicationContext(),pendingId+"",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
@@ -89,14 +94,53 @@ public class StopActivity extends AppCompatActivity {
 
                 App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
 
+                int end=App.sharedPreferences.getInt("volume",0);
+                for(int i=0;i<end ;i++){
+                    App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
+                }
+                App.sharedPreferences.edit().putInt("volume",0).commit();
 
+                finishAffinity();
+            }
+        });
 
+        btnSnooz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar calendar=Calendar.getInstance();
+
+                Intent intent=new Intent(getApplicationContext(), MyReceiver.class);
+                intent.setAction("com.javadi.alarm");
+                AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
+                PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),pendingId,intent,PendingIntent.FLAG_UPDATE_CURRENT );
+                alarmManager.cancel(pendingIntent);
+
+                Intent stopservice=new Intent(StopActivity.this, MyService.class);
+                stopService(stopservice);
+
+                App.sharedPreferences.edit().putInt("is_run",0).commit();
+                App.sharedPreferences.edit().putInt("pending_id",0).commit();
+
+                App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
 
                 int end=App.sharedPreferences.getInt("volume",0);
                 for(int i=0;i<end ;i++){
                     App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
                 }
                 App.sharedPreferences.edit().putInt("volume",0).commit();
+
+                List<Integer> list=new ArrayList<>();
+                SnoozShiftTime snoozShiftTime=new SnoozShiftTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE));
+                list=snoozShiftTime.finalTimes(5);
+                int snooz_hour=list.get(0);
+                int snooz_minute=list.get(1);
+
+                if(!checkAlarmExists(snooz_hour,snooz_minute)){
+
+                    setTime(snooz_hour,snooz_minute,pendingId+1);
+                    App.dbHelper.insertAlarm(snooz_hour,snooz_minute);
+                }
 
                 finishAffinity();
             }
@@ -134,6 +178,50 @@ public class StopActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    private void setTime(int Hour,int Minute,int id){
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,Hour);
+        calendar.set(Calendar.MINUTE,Minute);
+        calendar.set(Calendar.SECOND,0);
+        calendar.add(Calendar.MILLISECOND,0);
+        if(calendar.getTimeInMillis()< System.currentTimeMillis()){
+            calendar.add(Calendar.DATE,1);
+        }
+        Intent intent=new Intent(getApplicationContext(),MyReceiver.class);
+        intent.setAction("com.javadi.alarm");
+        AlarmManager alarmManager=(AlarmManager)getSystemService(getApplicationContext().ALARM_SERVICE);
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(getApplicationContext(),id,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),60000,pendingIntent);
+        if(Build.VERSION.SDK_INT>23){
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+        else{
+            alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+        if(Build.VERSION.SDK_INT<22){
+            Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+            alarmChanged.putExtra("alarmSet", true);
+            getApplicationContext().sendBroadcast(alarmChanged);
+            //alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+        }
+        else{
+            alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(calendar.getTimeInMillis(),pendingIntent),pendingIntent);
+        }
+
+    }
+
+    private boolean checkAlarmExists(int hour,int minute){
+        Cursor cursor=App.dbHelper.getAlarms();
+        if(cursor.moveToFirst()){
+            do{
+                if(cursor.getInt(cursor.getColumnIndex(DBC.hour))==hour && cursor.getInt(cursor.getColumnIndex(DBC.minute))==minute){
+                    return true;
+                }
+            }while (cursor.moveToNext());
+        }
+        return false;
     }
 
 }

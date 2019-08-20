@@ -88,7 +88,7 @@ public class MyService extends Service {
         }
 
         int volume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
-        App.sharedPreferences.edit().putInt("volume",volume);
+        App.sharedPreferences.edit().putInt("volume",volume).commit();
 
         for(int j=volume;j>=0;j--){
             App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);

@@ -7,42 +7,58 @@
     android:background="#6DAAF8"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.ncorti.slidetoact.SlideToActView
-        android:id="@+id/example"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_snooz"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
-        android:clickable="true"
-        android:elevation="10dp"
-        app:text_color="#BBB5B5"
+        android:layout_marginBottom="8dp"
+        android:padding="10dp"
+        android:fontFamily="@font/vazir"
+        android:text="پنج دقیقه چرت میزنم"
+        android:textSize="25dp"
+        android:textColor="@color/white"
+        android:background="@drawable/round_button2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:text="به راست بکشید"
-        app:text_size="25dp"
-        app:text_style="bold" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout9"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/btn_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:textSize="25dp"
-        android:text="برای متوقف شدن آلارم دکمه زیر را به راست بکشید"
-        android:gravity="center"
-        android:textColor="@color/white"
+        android:padding="10dp"
+        android:layout_marginBottom="32dp"
         android:fontFamily="@font/vazir"
-        app:layout_constraintBottom_toTopOf="@+id/example"
+        android:background="@drawable/round_button"
+        android:text="متوقف کردن آلارم"
+        android:textSize="25dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout9"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -25,8 +25,8 @@ public class MyReceiver extends BroadcastReceiver {
         if(intent.getAction().equalsIgnoreCase("com.javadi.alarm")){
 
             Calendar calendar=Calendar.getInstance();
-             int hh=calendar.get(Calendar.HOUR_OF_DAY);
-             int mm=calendar.get(Calendar.MINUTE);
+            int hh=calendar.get(Calendar.HOUR_OF_DAY);
+            int mm=calendar.get(Calendar.MINUTE);
 
             App.sharedPreferences.edit().putInt("hour_trigered", hh).commit();
             App.sharedPreferences.edit().putInt("minute_trigred",mm).commit();
