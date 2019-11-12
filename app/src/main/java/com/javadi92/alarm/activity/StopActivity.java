@@ -1,13 +1,10 @@
-package com.javadi.alarm.activity;
+package com.javadi92.alarm.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,12 +15,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
-import com.javadi.alarm.database.DBC;
-import com.javadi.alarm.receiver.MyReceiver;
-import com.javadi.alarm.R;
-import com.javadi.alarm.service.MyService;
-import com.javadi.alarm.util.App;
-import com.javadi.alarm.util.SnoozShiftTime;
+import com.javadi92.alarm.database.DBC;
+import com.javadi92.alarm.receiver.MyReceiver;
+import com.javadi92.alarm.R;
+import com.javadi92.alarm.service.MyService;
+import com.javadi92.alarm.util.App;
+import com.javadi92.alarm.util.SnoozShiftTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,16 +86,20 @@ public class StopActivity extends AppCompatActivity {
                 Intent stopservice=new Intent(StopActivity.this, MyService.class);
                 stopService(stopservice);
 
+                Intent alarmChanged = new Intent("android.intent.action.ALARM_CHANGED");
+                alarmChanged.putExtra("alarmSet", false/*enabled*/);
+                getApplicationContext().sendBroadcast(alarmChanged);
+
                 App.sharedPreferences.edit().putInt("is_run",0).commit();
                 App.sharedPreferences.edit().putInt("pending_id",0).commit();
 
                 App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
 
-                int end=App.sharedPreferences.getInt("volume",0);
+                /*int end=App.sharedPreferences.getInt("volume",0);
                 for(int i=0;i<end ;i++){
                     App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
-                }
-                App.sharedPreferences.edit().putInt("volume",0).commit();
+                }*/
+                //App.sharedPreferences.edit().putInt("volume",0).commit();
 
                 finishAffinity();
             }
@@ -124,11 +125,11 @@ public class StopActivity extends AppCompatActivity {
 
                 App.sharedPreferences.edit().putBoolean("stop_activity",false).commit();
 
-                int end=App.sharedPreferences.getInt("volume",0);
+                /*int end=App.sharedPreferences.getInt("volume",0);
                 for(int i=0;i<end ;i++){
                     App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
                 }
-                App.sharedPreferences.edit().putInt("volume",0).commit();
+                App.sharedPreferences.edit().putInt("volume",0).commit();*/
 
                 List<Integer> list=new ArrayList<>();
                 SnoozShiftTime snoozShiftTime=new SnoozShiftTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE));
@@ -164,7 +165,7 @@ public class StopActivity extends AppCompatActivity {
                         }
                     });
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

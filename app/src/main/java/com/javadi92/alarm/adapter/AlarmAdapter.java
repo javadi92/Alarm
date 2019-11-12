@@ -1,4 +1,4 @@
-package com.javadi.alarm.adapter;
+package com.javadi92.alarm.adapter;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,13 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.javadi.alarm.R;
-import com.javadi.alarm.activity.AlarmSettingsActivity;
-import com.javadi.alarm.activity.MainActivity;
-import com.javadi.alarm.database.DBC;
-import com.javadi.alarm.model.Alarm;
-import com.javadi.alarm.receiver.MyReceiver;
-import com.javadi.alarm.util.App;
+import com.javadi92.alarm.R;
+import com.javadi92.alarm.activity.SettingsActivity;
+import com.javadi92.alarm.database.DBC;
+import com.javadi92.alarm.model.Alarm;
+import com.javadi92.alarm.receiver.MyReceiver;
+import com.javadi92.alarm.util.App;
 import java.util.Calendar;
 import java.util.List;
 
@@ -84,6 +82,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             myViewHolder.tvHour.setTextColor(Color.parseColor("#0A2DF1"));
             myViewHolder.textView.setTextColor(Color.parseColor("#0A2DF1"));
             myViewHolder.tvMinute.setTextColor(Color.parseColor("#0A2DF1"));
+            myViewHolder.tvDay.setVisibility(View.VISIBLE);
         }
 
         else if(alarms.get(i).getAvailable()==0){
@@ -91,6 +90,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             myViewHolder.tvHour.setTextColor(Color.GRAY);
             myViewHolder.textView.setTextColor(Color.GRAY);
             myViewHolder.tvMinute.setTextColor(Color.GRAY);
+            myViewHolder.tvDay.setVisibility(View.GONE);
         }
 
         //show alarm icon after alarm set in statusbar
@@ -158,10 +158,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     App.dbHelper.updateAlarm(id,h,m,1);
                     alarm2.setAvailable(1);
                     alarms.set(i,alarm2);
+
+                    myViewHolder.tvDay.setVisibility(View.VISIBLE);
                 }else {
                     myViewHolder.tvHour.setTextColor(Color.GRAY);
                     myViewHolder.textView.setTextColor(Color.GRAY);
                     myViewHolder.tvMinute.setTextColor(Color.GRAY);
+                    myViewHolder.tvDay.setVisibility(View.GONE);
                     Toast.makeText(mContext,"آلارم غیر فعال شد",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(mContext, MyReceiver.class);
                     intent.setAction("com.javadi.alarm");
@@ -183,14 +186,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
             }
         });
 
-        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+        /*myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //becarefull that never use mContext
-                Intent start=new Intent(myViewHolder.itemView.getContext(), AlarmSettingsActivity.class);
+                Intent start=new Intent(myViewHolder.itemView.getContext(), SettingsActivity.class);
                 myViewHolder.itemView.getContext().startActivity(start);
             }
-        });
+        });*/
     }
 
     @Override

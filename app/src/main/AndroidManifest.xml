@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.javadi.alarm">
+    package="com.javadi92.alarm">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -11,7 +11,7 @@
 
 
     <application
-        android:name=".util.App"
+        android:name="com.javadi92.alarm.util.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".receiver.MyReceiver"
+            android:name="com.javadi92.alarm.receiver.MyReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -27,22 +27,22 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".util.ResetAlarm">
+        <receiver android:name="com.javadi92.alarm.util.ResetAlarm">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <service android:name=".service.MyService"
+        <service android:name="com.javadi92.alarm.service.MyService"
             android:enabled="true"
             android:exported="false"></service>
-        <activity android:name=".activity.AddAlarmsActivity">
+        <activity android:name="com.javadi92.alarm.activity.AddAlarmsActivity">
 
         </activity>
-        <activity android:name=".activity.StopActivity"
+        <activity android:name="com.javadi92.alarm.activity.StopActivity"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true"/>
-        <activity android:name=".activity.MainActivity"
+        <activity android:name="com.javadi92.alarm.activity.MainActivity"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -52,9 +52,10 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".activity.AlarmSettingsActivity">
+        <activity android:name="com.javadi92.alarm.activity.AlarmSettingsActivity">
 
         </activity>
+        <activity android:name="com.javadi92.alarm.activity.SettingsActivity"></activity>
     </application>
 
 </manifest>

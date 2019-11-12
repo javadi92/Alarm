@@ -1,4 +1,4 @@
-package com.javadi.alarm.database;
+package com.javadi92.alarm.database;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -1,14 +1,11 @@
-package com.javadi.alarm.service;
+package com.javadi92.alarm.service;
 
-import android.Manifest;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -18,18 +15,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
-import com.javadi.alarm.R;
-import com.javadi.alarm.model.Alarm;
-import com.javadi.alarm.util.App;
+import com.javadi92.alarm.R;
 
 public class MyService extends Service {
 
     public static Vibrator vibrate;
     private Uri alarmTone;
     public static Ringtone ringtoneAlarm;
-    AudioManager am;
+    //AudioManager am;
     MediaPlayer mediaPlayer;
     long[] pattern;
 
@@ -38,8 +32,8 @@ public class MyService extends Service {
         super.onCreate();
         alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtoneAlarm = RingtoneManager.getRingtone(this, alarmTone);
-        am= (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-        am.adjustVolume(AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_PLAY_SOUND);
+        //am= (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        //am.adjustVolume(AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_PLAY_SOUND);
         mediaPlayer=MediaPlayer.create(getApplicationContext(),alarmTone);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //vibrate=(Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
@@ -87,16 +81,16 @@ public class MyService extends Service {
             startForeground(2, notification);
         }
 
-        int volume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        /*int volume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
         App.sharedPreferences.edit().putInt("volume",volume).commit();
 
         for(int j=volume;j>=0;j--){
             App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
-        }
+        }*/
 
 
         //increase volume of phone gradually
-        new Thread(new Runnable() {
+       /* new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -110,7 +104,7 @@ public class MyService extends Service {
                     }
                 }
             }
-        }).start();
+        }).start();*/
 
         return START_STICKY;
     }

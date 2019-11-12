@@ -1,4 +1,4 @@
-package com.javadi.alarm.util;
+package com.javadi92.alarm.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,9 +8,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 
-import com.javadi.alarm.activity.MainActivity;
-import com.javadi.alarm.database.DBC;
-import com.javadi.alarm.receiver.MyReceiver;
+import com.javadi92.alarm.database.DBC;
+import com.javadi92.alarm.receiver.MyReceiver;
 import java.util.Calendar;
 
 public class ResetAlarm extends BroadcastReceiver {

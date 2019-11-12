@@ -1,4 +1,4 @@
-package com.javadi.alarm.database;
+package com.javadi92.alarm.database;
 
 public class DBC {
     public static final String TABLE_NAME="alarms";

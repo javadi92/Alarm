@@ -1,4 +1,4 @@
-package com.javadi.alarm.activity;
+package com.javadi92.alarm.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -15,18 +15,20 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.javadi.alarm.adapter.AlarmAdapter;
-import com.javadi.alarm.R;
-import com.javadi.alarm.database.DBC;
-import com.javadi.alarm.model.Alarm;
-import com.javadi.alarm.receiver.MyReceiver;
-import com.javadi.alarm.service.MyService;
-import com.javadi.alarm.util.App;
+import com.javadi92.alarm.adapter.AlarmAdapter;
+import com.javadi92.alarm.R;
+import com.javadi92.alarm.database.DBC;
+import com.javadi92.alarm.model.Alarm;
+import com.javadi92.alarm.receiver.MyReceiver;
+import com.javadi92.alarm.service.MyService;
+import com.javadi92.alarm.util.App;
 import com.mohamadamin.persianmaterialdatetimepicker.time.RadialPickerLayout;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements
     FloatingActionButton fabAddAlarm;
     RecyclerView recyclerView;
     TextView tv,tv2;
+    ImageView imageViewSettings;
+    Toolbar toolbarMain;
     AlarmAdapter alarmAdapter;
     List<Alarm> alarms;
     static int pending;
@@ -63,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements
 
         tv=(TextView)findViewById(R.id.tv);
         tv2=(TextView)findViewById(R.id.tv2);
+        imageViewSettings=(ImageView)findViewById(R.id.img_settings);
+        toolbarMain=(Toolbar)findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbarMain);
         recyclerView=(RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager llm=new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -118,6 +125,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
+
+        imageViewSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent settingsIntent=new Intent(MainActivity.this,SettingsActivity.class);
+                startActivity(settingsIntent);
+            }
+        });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView); //set swipe to recylcerview

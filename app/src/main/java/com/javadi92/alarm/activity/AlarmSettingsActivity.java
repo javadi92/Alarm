@@ -1,4 +1,4 @@
-package com.javadi.alarm.activity;
+package com.javadi92.alarm.activity;
 
 import android.database.Cursor;
 import android.media.RingtoneManager;
@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.javadi.alarm.R;
-import com.javadi.alarm.adapter.MusicAdapter;
+import com.javadi92.alarm.R;
+import com.javadi92.alarm.adapter.MusicAdapter;
 import java.util.ArrayList;
 import java.util.List;
 

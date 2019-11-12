@@ -1,4 +1,4 @@
-package com.javadi.alarm.model;
+package com.javadi92.alarm.model;
 
 public class Alarm {
 

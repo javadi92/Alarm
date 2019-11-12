@@ -1,16 +1,11 @@
-package com.javadi.alarm.util;
+package com.javadi92.alarm.util;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Vibrator;
-import com.javadi.alarm.R;
-import com.javadi.alarm.database.DBHelper;
+
+import com.javadi92.alarm.database.DBHelper;
 
 public class App extends Application {
 

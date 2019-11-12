@@ -1,4 +1,4 @@
-package com.javadi.alarm.util;
+package com.javadi92.alarm.util;
 
 import java.util.ArrayList;
 import java.util.List;

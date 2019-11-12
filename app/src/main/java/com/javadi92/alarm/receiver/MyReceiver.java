@@ -1,16 +1,13 @@
-package com.javadi.alarm.receiver;
+package com.javadi92.alarm.receiver;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Build;
-import android.provider.Settings;
 
-import com.javadi.alarm.activity.StopActivity;
-import com.javadi.alarm.service.MyService;
-import com.javadi.alarm.util.App;
+import com.javadi92.alarm.activity.StopActivity;
+import com.javadi92.alarm.service.MyService;
+import com.javadi92.alarm.util.App;
 
 import java.util.Calendar;
 

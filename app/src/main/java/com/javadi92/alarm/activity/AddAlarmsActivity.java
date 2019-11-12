@@ -1,9 +1,8 @@
- package com.javadi.alarm.activity;
+ package com.javadi92.alarm.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Build;
@@ -14,10 +13,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.javadi.alarm.database.DBC;
-import com.javadi.alarm.receiver.MyReceiver;
-import com.javadi.alarm.R;
-import com.javadi.alarm.util.App;
+import com.javadi92.alarm.database.DBC;
+import com.javadi92.alarm.receiver.MyReceiver;
+import com.javadi92.alarm.R;
+import com.javadi92.alarm.util.App;
 import java.util.Calendar;
 
  public class AddAlarmsActivity extends AppCompatActivity {

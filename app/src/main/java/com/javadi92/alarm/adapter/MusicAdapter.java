@@ -1,4 +1,4 @@
-package com.javadi.alarm.adapter;
+package com.javadi92.alarm.adapter;
 
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -9,14 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
-import com.javadi.alarm.R;
+import com.javadi92.alarm.R;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
