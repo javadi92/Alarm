@@ -44,7 +44,10 @@ public class StopActivity extends AppCompatActivity {
         win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         btnStop=(Button)findViewById(R.id.btn_stop);
+
         btnSnooz=(Button)findViewById(R.id.btn_snooz);
+        btnSnooz.setText(App.sharedPreferences.getInt("snooz_time",5)+" دقیقه چرت میزنم");
+
         cl=(ConstraintLayout)findViewById(R.id.cl);
 
         int h=App.sharedPreferences.getInt("hour_trigered",-1);

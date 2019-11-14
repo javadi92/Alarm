@@ -5,11 +5,13 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.javadi92.alarm.R;
 
@@ -21,6 +23,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.myViewHolder
     List<Uri> uris=new ArrayList<>();
     RadioButton radioButton;
     public static MediaPlayer mediaPlayer;
+    public static String name;
+    public static Uri uri;
 
     public MusicAdapter (List<Uri> uris){
         this.uris=uris;
@@ -37,6 +41,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.myViewHolder
     public void onBindViewHolder(@NonNull final myViewHolder myViewHolder, final int i) {
         Ringtone ringtone = RingtoneManager.getRingtone(myViewHolder.itemView.getContext(), uris.get(i));
         String title = ringtone.getTitle(myViewHolder.itemView.getContext());
+
         myViewHolder.rbMusic.setText(title);
 
         myViewHolder.rbMusic.setOnClickListener(new View.OnClickListener() {
@@ -48,10 +53,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.myViewHolder
                         mediaPlayer.stop();
                     }
                 }
-                mediaPlayer=MediaPlayer.create(myViewHolder.itemView.getContext(),uris.get(i));
+                mediaPlayer= MediaPlayer.create(myViewHolder.itemView.getContext(),uris.get(i));
 
 
                 mediaPlayer.start();
+
+                uri=uris.get(i);
+                Ringtone ringtone = RingtoneManager.getRingtone(myViewHolder.itemView.getContext(), uris.get(i));
+                String title = ringtone.getTitle(myViewHolder.itemView.getContext());
+                name=title;
                 if(radioButton==null){
                     //myViewHolder.rbMusic.setChecked(true);
                     radioButton=myViewHolder.rbMusic;

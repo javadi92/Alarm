@@ -17,27 +17,29 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import com.javadi92.alarm.R;
+import com.javadi92.alarm.util.App;
 
 public class MyService extends Service {
 
     public static Vibrator vibrate;
     private Uri alarmTone;
     public static Ringtone ringtoneAlarm;
-    //AudioManager am;
+    AudioManager am;
     MediaPlayer mediaPlayer;
     long[] pattern;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        //alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        alarmTone= Uri.parse(App.sharedPreferences.getString("uri",RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString()));
         ringtoneAlarm = RingtoneManager.getRingtone(this, alarmTone);
-        //am= (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        am= (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         //am.adjustVolume(AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_PLAY_SOUND);
         mediaPlayer=MediaPlayer.create(getApplicationContext(),alarmTone);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //vibrate=(Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
-        pattern = new long[]{0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
+        //pattern = new long[]{0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
     }
 
     @Override
@@ -50,7 +52,7 @@ public class MyService extends Service {
         mediaPlayer.start();
 
 
-        /*if(am.getRingerMode()==AudioManager.RINGER_MODE_SILENT){
+        if(am.getRingerMode()==AudioManager.RINGER_MODE_SILENT){
             am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
             App.sharedPreferences.edit().putString("ringtone","silent").commit();
         }
@@ -58,7 +60,7 @@ public class MyService extends Service {
         else if(am.getRingerMode()==AudioManager.RINGER_MODE_VIBRATE){
             am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
             App.sharedPreferences.edit().putString("ringtone","vibrate").commit();
-        }*/
+        }
 
 
         if(Build.VERSION.SDK_INT>=26){
@@ -81,16 +83,17 @@ public class MyService extends Service {
             startForeground(2, notification);
         }
 
-        /*int volume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
+        int volume=am.getStreamVolume(AudioManager.STREAM_MUSIC);
         App.sharedPreferences.edit().putInt("volume",volume).commit();
 
         for(int j=volume;j>=0;j--){
             App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
-        }*/
+        }
 
 
         //increase volume of phone gradually
-       /* new Thread(new Runnable() {
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
 
@@ -98,13 +101,14 @@ public class MyService extends Service {
                     am.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
 
                     try {
-                        Thread.sleep(4000);
+                        int increase_time=App.sharedPreferences.getInt("snooz_time",5)*1000;
+                        Thread.sleep(increase_time);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }).start();*/
+        }).start();
 
         return START_STICKY;
     }
