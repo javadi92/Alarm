@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +64,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         clSoundIncrease.setOnClickListener(this);
         clRingtone.setOnClickListener(this);
         clIncreaseTime.setOnClickListener(this);
+        checkBoxIncreaseSound.setOnClickListener(this);
+        checkBoxIncreaseSound.setOnClickListener(this);
+
+        if(App.sharedPreferences.getBoolean("checkIncrease",false)){
+            checkBoxIncreaseSound.setChecked(true);
+        }
 
         toolbarSettings=(Toolbar)findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbarSettings);
@@ -142,9 +149,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case (R.id.cl_increase_sound):
                 if(checkBoxIncreaseSound.isChecked()){
                     checkBoxIncreaseSound.setChecked(false);
+                    App.sharedPreferences.edit().putBoolean("checkIncrease",false).commit();
                 }
                 else {
                     checkBoxIncreaseSound.setChecked(true);
+                    App.sharedPreferences.edit().putBoolean("checkIncrease",true).commit();
+                }
+                break;
+            case (R.id.checkBox_increase_sound):
+                if(!checkBoxIncreaseSound.isChecked()){
+                    checkBoxIncreaseSound.setChecked(false);
+                    App.sharedPreferences.edit().putBoolean("checkIncrease",false).commit();
+                }
+                else {
+                    checkBoxIncreaseSound.setChecked(true);
+                    App.sharedPreferences.edit().putBoolean("checkIncrease",true).commit();
                 }
                 break;
             case (R.id.cl_increase_time):

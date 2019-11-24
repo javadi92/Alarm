@@ -5,16 +5,12 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
-import android.widget.Toast;
-
 import com.javadi92.alarm.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +51,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.myViewHolder
                 }
                 mediaPlayer= MediaPlayer.create(myViewHolder.itemView.getContext(),uris.get(i));
 
-
                 mediaPlayer.start();
 
                 uri=uris.get(i);
@@ -66,13 +61,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.myViewHolder
                     //myViewHolder.rbMusic.setChecked(true);
                     radioButton=myViewHolder.rbMusic;
                 }
-                else {
+                else if(radioButton!=myViewHolder.rbMusic) {
                     radioButton.setChecked(false);
                     radioButton=myViewHolder.rbMusic;
                     //radioButton.setChecked(true);
                 }
-
-
             }
         });
     }

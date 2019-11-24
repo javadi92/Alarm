@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.javadi92.alarm.util.ResetAlarm">
+        <receiver android:name="com.javadi92.alarm.util.BootAlarm">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.DEFAULT"/>

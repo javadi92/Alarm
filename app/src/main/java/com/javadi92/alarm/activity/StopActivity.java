@@ -2,9 +2,11 @@ package com.javadi92.alarm.activity;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -104,6 +106,17 @@ public class StopActivity extends AppCompatActivity {
                 }*/
                 //App.sharedPreferences.edit().putInt("volume",0).commit();
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        AudioManager am=(AudioManager)getSystemService(Context.AUDIO_SERVICE);
+                        for(int i=0;i<14;i++){
+                            am.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
+
+                        }
+                    }
+                }).start();
                 finishAffinity();
             }
         });

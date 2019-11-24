@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,10 +30,12 @@ import com.javadi92.alarm.model.Alarm;
 import com.javadi92.alarm.receiver.MyReceiver;
 import com.javadi92.alarm.service.MyService;
 import com.javadi92.alarm.util.App;
+import com.javadi92.alarm.util.SortAlarms;
 import com.mohamadamin.persianmaterialdatetimepicker.time.RadialPickerLayout;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -208,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                 alarms.clear();
                                 getAlarms();
+                                Collections.sort(alarms,Alarm.ALARM_COMPARATOR);
                                 if(alarms.size()==0){
                                     tv.setVisibility(View.VISIBLE);
                                     tv2.setVisibility(View.VISIBLE);
@@ -216,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements
                                     tv.setVisibility(View.GONE);
                                     tv2.setVisibility(View.GONE);
                                 }
+
                                 alarmAdapter.notifyDataSetChanged();
                             }
                             }, now.get(PersianCalendar.HOUR_OF_DAY), now.get(PersianCalendar.MINUTE), true);
@@ -253,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -267,6 +273,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         alarms.clear();
         getAlarms();
+        Collections.sort(alarms,Alarm.ALARM_COMPARATOR);
         alarmAdapter.notifyDataSetChanged();
     }
 

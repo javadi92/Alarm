@@ -48,9 +48,6 @@ public class MyService extends Service {
         //vibrate.vibrate(pattern,0);
         //ringtoneAlarm.play();
 
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
-
 
         if(am.getRingerMode()==AudioManager.RINGER_MODE_SILENT){
             am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
@@ -90,25 +87,41 @@ public class MyService extends Service {
             App.audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
         }
 
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+
 
         //increase volume of phone gradually
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        if(App.sharedPreferences.getBoolean("checkIncrease",false)){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
 
-                for(int i=0;i<16;i++){
-                    am.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
+                    for(int i=0;i<16;i++){
+                        am.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
 
-                    try {
-                        int increase_time=App.sharedPreferences.getInt("snooz_time",5)*1000;
-                        Thread.sleep(increase_time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        try {
+                            int increase_time=App.sharedPreferences.getInt("increase_time",5)*1000;
+                            Thread.sleep(increase_time);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        }).start();
+            }).start();
+        }
+        else{
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    for(int i=0;i<6;i++){
+                        am.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
+                    }
+                }
+            }).start();
+        }
 
         return START_STICKY;
     }

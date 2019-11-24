@@ -83,7 +83,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/vazir"
                     android:text="آلارم"
                     android:textColor="#fff"

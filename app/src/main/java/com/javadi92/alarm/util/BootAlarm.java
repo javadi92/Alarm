@@ -12,7 +12,7 @@ import com.javadi92.alarm.database.DBC;
 import com.javadi92.alarm.receiver.MyReceiver;
 import java.util.Calendar;
 
-public class ResetAlarm extends BroadcastReceiver {
+public class BootAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().equalsIgnoreCase("android.intent.action.BOOT_COMPLETED")){

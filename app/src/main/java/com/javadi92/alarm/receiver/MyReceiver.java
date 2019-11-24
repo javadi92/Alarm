@@ -38,7 +38,7 @@ public class MyReceiver extends BroadcastReceiver {
                 context.startService(service);
             }
 
-            //show stop activity
+            //show stop activity from outside of app
             Intent lockIntent = new Intent(context, StopActivity.class);
             lockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(lockIntent);

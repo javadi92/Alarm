@@ -21,7 +21,10 @@ import com.javadi92.alarm.database.DBC;
 import com.javadi92.alarm.model.Alarm;
 import com.javadi92.alarm.receiver.MyReceiver;
 import com.javadi92.alarm.util.App;
+import com.javadi92.alarm.util.SortAlarms;
+
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder> {
@@ -47,6 +50,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final myViewHolder myViewHolder, final int i) {
+
+        //alarms=new SortAlarms(alarms).sort();
 
         String hour=alarms.get(i).getHour()+"";
         String minute=alarms.get(i).getMinute()+"";
@@ -119,6 +124,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                 alarm2.setHour(h);
                 alarm2.setMinute(m);
                 if(myViewHolder.switchCompat.isChecked()){
+
                     checkAlarmExists=true;
                     myViewHolder.tvHour.setTextColor(Color.parseColor("#0A2DF1"));
                     myViewHolder.textView.setTextColor(Color.parseColor("#0A2DF1"));
@@ -158,7 +164,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                     App.dbHelper.updateAlarm(id,h,m,1);
                     alarm2.setAvailable(1);
                     alarms.set(i,alarm2);
-
+                    Collections.sort(alarms,Alarm.ALARM_COMPARATOR);
+                    notifyDataSetChanged();
                     myViewHolder.tvDay.setVisibility(View.VISIBLE);
                 }else {
                     myViewHolder.tvHour.setTextColor(Color.GRAY);
@@ -182,6 +189,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
                         alarmChanged.putExtra("alarmSet", false);
                         mContext.sendBroadcast(alarmChanged);
                     }
+                    Collections.sort(alarms,Alarm.ALARM_COMPARATOR);
+                    notifyDataSetChanged();
                 }
             }
         });
@@ -241,4 +250,5 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.myViewHolder
         }
         return false;
     }
+
 }

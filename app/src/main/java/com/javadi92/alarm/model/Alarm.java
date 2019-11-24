@@ -1,5 +1,7 @@
 package com.javadi92.alarm.model;
 
+import java.util.Comparator;
+
 public class Alarm {
 
     private int id;
@@ -38,4 +40,11 @@ public class Alarm {
     public void setAvailable(int available) {
         this.available = available;
     }
+
+    public static final Comparator<Alarm> ALARM_COMPARATOR=new Comparator<Alarm>() {
+        @Override
+        public int compare(Alarm alarm1, Alarm alarm2) {
+            return alarm2.getAvailable()-alarm1.getAvailable();
+        }
+    };
 }
