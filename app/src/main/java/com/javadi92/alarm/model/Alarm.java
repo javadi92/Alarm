@@ -44,6 +44,12 @@ public class Alarm {
     public static final Comparator<Alarm> ALARM_COMPARATOR=new Comparator<Alarm>() {
         @Override
         public int compare(Alarm alarm1, Alarm alarm2) {
+            if(alarm2.getAvailable()-alarm1.getAvailable()==0){
+                if(alarm1.getHour()-alarm2.getHour()==0){
+                    return alarm1.getMinute()-alarm2.getMinute();
+                }
+                return alarm1.getHour()-alarm2.getHour();
+            }
             return alarm2.getAvailable()-alarm1.getAvailable();
         }
     };

@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements
                                 alarms.clear();
                                 getAlarms();
                                 Collections.sort(alarms,Alarm.ALARM_COMPARATOR);
+                                alarmAdapter.notifyDataSetChanged();
                                 if(alarms.size()==0){
                                     tv.setVisibility(View.VISIBLE);
                                     tv2.setVisibility(View.VISIBLE);
@@ -220,8 +221,6 @@ public class MainActivity extends AppCompatActivity implements
                                     tv.setVisibility(View.GONE);
                                     tv2.setVisibility(View.GONE);
                                 }
-
-                                alarmAdapter.notifyDataSetChanged();
                             }
                             }, now.get(PersianCalendar.HOUR_OF_DAY), now.get(PersianCalendar.MINUTE), true);
                 tpd.setThemeDark(false);
