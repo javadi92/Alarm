@@ -38,15 +38,20 @@ public class MyService extends Service {
         //am.adjustVolume(AudioManager.ADJUST_UNMUTE, AudioManager.FLAG_PLAY_SOUND);
         mediaPlayer=MediaPlayer.create(getApplicationContext(),alarmTone);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        //vibrate=(Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
-        //pattern = new long[]{0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
+
+        if(App.sharedPreferences.getBoolean("vibrate",false)){
+            vibrate=(Vibrator)this.getSystemService(Context.VIBRATOR_SERVICE);
+            pattern = new long[]{0, 1000, 1000, 2000, 2000, 3000, 3000, 2000, 2000};
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        //vibrate.vibrate(pattern,0);
-        //ringtoneAlarm.play();
+        if(App.sharedPreferences.getBoolean("vibrate",false)){
+            vibrate.vibrate(pattern,0);
+        }
+
 
 
         if(am.getRingerMode()==AudioManager.RINGER_MODE_SILENT){
@@ -136,6 +141,9 @@ public class MyService extends Service {
         super.onDestroy();
         //ringtoneAlarm.stop();
         mediaPlayer.stop();
-        //vibrate.cancel();
+
+        if(App.sharedPreferences.getBoolean("vibrate",false)){
+            vibrate.cancel();
+        }
     }
 }

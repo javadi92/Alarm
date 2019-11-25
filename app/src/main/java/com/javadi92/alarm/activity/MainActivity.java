@@ -1,8 +1,11 @@
 package com.javadi92.alarm.activity;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements
     static int pending;
     private static final String TIMEPICKER = "TimePickerDialog";
     int pendingId;
+    AlertDialog alertDialogSilentPermission;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(intent2);
             }
         }
+
+
 
         alarms=new ArrayList<>();
 
@@ -144,6 +150,34 @@ public class MainActivity extends AppCompatActivity implements
         fabAddAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //if first time app openes ask from user to get permission to disable do not disturb
+                if(App.sharedPreferences.getBoolean("first_time_app_openes",true) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    App.sharedPreferences.edit().putBoolean("first_time_app_openes",false).commit();
+
+                    AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("آیا میخواهید در حالت سایلنت هم صدای زنگ پخش شود؟ برای این منظور نیاز است که مجوز مربوطه داده شود");
+                    builder.setPositiveButton("می خواهم", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !notificationManager.isNotificationPolicyAccessGranted()) {
+                                //open settings phone 
+                                Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                                startActivity(intent);
+                            }
+                            alertDialogSilentPermission.cancel();
+                        }
+                    });
+                    builder.setNegativeButton("نه", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            alertDialogSilentPermission.cancel();
+                        }
+                    });
+                    alertDialogSilentPermission=builder.create();
+                    alertDialogSilentPermission.show();
+                }
 
                 PersianCalendar now = new PersianCalendar();
                 com.mohamadamin.persianmaterialdatetimepicker.time.TimePickerDialog tpd =

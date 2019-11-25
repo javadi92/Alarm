@@ -64,9 +64,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         clSoundIncrease.setOnClickListener(this);
         clRingtone.setOnClickListener(this);
         clIncreaseTime.setOnClickListener(this);
-        checkBoxIncreaseSound.setOnClickListener(this);
+        checkBoxVibrate.setOnClickListener(this);
         checkBoxIncreaseSound.setOnClickListener(this);
 
+        if(App.sharedPreferences.getBoolean("vibrate",false)){
+            checkBoxVibrate.setChecked(true);
+        }
         if(App.sharedPreferences.getBoolean("checkIncrease",false)){
             checkBoxIncreaseSound.setChecked(true);
         }
@@ -90,9 +93,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case (R.id.cl_vibrate):
                 if(checkBoxVibrate.isChecked()){
                     checkBoxVibrate.setChecked(false);
+                    App.sharedPreferences.edit().putBoolean("vibrate",false).commit();
                 }
                 else {
                     checkBoxVibrate.setChecked(true);
+                    App.sharedPreferences.edit().putBoolean("vibrate",true).commit();
                 }
                 break;
             case (R.id.cl_ringtone)  :
@@ -164,6 +169,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 else {
                     checkBoxIncreaseSound.setChecked(true);
                     App.sharedPreferences.edit().putBoolean("checkIncrease",true).commit();
+                }
+                break;
+            case (R.id.checkBox_vibrate):
+                if(!checkBoxVibrate.isChecked()){
+                    checkBoxVibrate.setChecked(false);
+                    App.sharedPreferences.edit().putBoolean("vibrate",false).commit();
+                }
+                else {
+                    checkBoxVibrate.setChecked(true);
+                    App.sharedPreferences.edit().putBoolean("vibrate",true).commit();
                 }
                 break;
             case (R.id.cl_increase_time):
